@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NammaRoute Travels - Bus Booking Management System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,20 +27,26 @@
       --seat-selected-bg: #0284c7;
       --seat-selected-border: #38bdf8;
       --seat-selected-text: #ffffff;
-      --seat-booked-bg: #374151;
-      --seat-booked-border: #4b5563;
-      --seat-booked-text: #9ca3af;
+      --seat-booked-bg: #27272a;
+      --seat-booked-border: #3f3f46;
+      --seat-booked-text: #71717a;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      overflow-x: hidden;
+    }
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      padding: 16px;
+      padding: clamp(8px, 2vw, 20px);
     }
     .container {
-      max-width: 1300px;
+      width: 100%;
+      max-width: 1280px;
       margin: 0 auto;
     }
 
@@ -48,22 +54,26 @@
     header {
       background: linear-gradient(135deg, #1e293b, #0f172a);
       border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 20px 24px;
-      margin-bottom: 20px;
+      border-radius: 12px;
+      padding: clamp(14px, 3vw, 22px);
+      margin-bottom: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      gap: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+    .brand {
+      flex: 1 1 280px;
     }
     .brand h1 {
-      font-size: 1.7rem;
+      font-size: clamp(1.25rem, 3.5vw, 1.7rem);
       color: var(--text-bright);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      font-weight: 700;
     }
     .brand h1 span {
       background: linear-gradient(90deg, #38bdf8, #818cf8);
@@ -72,22 +82,22 @@
     }
     .brand p {
       color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-top: 2px;
+      font-size: clamp(0.78rem, 2vw, 0.88rem);
+      margin-top: 3px;
     }
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
     .nav-btn {
       background: #1f2937;
       color: var(--text-bright);
       border: 1px solid var(--border-light);
-      padding: 8px 14px;
+      padding: 8px 12px;
       border-radius: 8px;
-      font-size: 0.85rem;
+      font-size: clamp(0.78rem, 2vw, 0.85rem);
       font-weight: 500;
       cursor: pointer;
       text-decoration: none;
@@ -95,6 +105,7 @@
       align-items: center;
       gap: 6px;
       transition: all 0.2s;
+      white-space: nowrap;
     }
     .nav-btn:hover {
       background: #374151;
@@ -102,29 +113,44 @@
       color: #fff;
     }
 
-    /* Tabs Bar */
+    /* Tabs Bar (Scrollable on small screens) */
+    .tabs-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 8px;
+    }
     .tabs-bar {
       display: flex;
       gap: 8px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 12px;
       overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-light) transparent;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tabs-bar::-webkit-scrollbar {
+      height: 4px;
+    }
+    .tabs-bar::-webkit-scrollbar-thumb {
+      background: var(--border-light);
+      border-radius: 4px;
     }
     .tab-btn {
-      background: transparent;
+      background: #131b2e;
       color: var(--text-muted);
-      border: 1px solid transparent;
-      padding: 10px 18px;
+      border: 1px solid var(--card-border);
+      padding: 9px 14px;
       border-radius: 8px;
-      font-size: 0.92rem;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       transition: all 0.2s;
       white-space: nowrap;
+      flex-shrink: 0;
     }
     .tab-btn:hover {
       color: var(--text-bright);
@@ -136,110 +162,124 @@
       border-color: #3b82f6;
     }
 
-    /* Main Layout */
+    /* Main Tab Content */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* Visual Booking Section */
+    /* Visual Booking Grid (Responsive 2-column to 1-column) */
     .booking-grid {
       display: grid;
-      grid-template-columns: 1fr 420px;
-      gap: 20px;
+      grid-template-columns: minmax(0, 1fr) 390px;
+      gap: 16px;
+      align-items: start;
     }
-    @media (max-width: 1024px) {
-      .booking-grid { grid-template-columns: 1fr; }
+    @media (max-width: 960px) {
+      .booking-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      padding: clamp(14px, 2.5vw, 20px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      min-width: 0;
     }
     .card-title {
-      font-size: 1.15rem;
+      font-size: clamp(1rem, 2.5vw, 1.15rem);
       font-weight: 600;
       color: var(--text-bright);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--card-border);
       padding-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     /* Route Selector Bar */
     .route-bar {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
       flex-wrap: wrap;
-      margin-bottom: 18px;
-      padding: 12px 16px;
+      margin-bottom: 14px;
+      padding: 10px 14px;
       background: #0f172a;
       border-radius: 8px;
       border: 1px solid var(--border-light);
+      width: 100%;
+    }
+    .route-bar label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
     }
     .route-bar select {
-      flex: 1;
-      min-width: 250px;
+      flex: 1 1 200px;
+      width: 100%;
       background: #1e293b;
       border: 1px solid var(--border-light);
       color: #fff;
-      padding: 10px 14px;
+      padding: 9px 12px;
       border-radius: 6px;
-      font-size: 0.95rem;
+      font-size: 16px; /* Prevents auto-zoom on mobile iOS */
       cursor: pointer;
     }
 
-    /* Route summary badges */
+    /* Route metadata badges */
     .route-meta {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     .meta-tag {
       background: #1e293b;
       border: 1px solid var(--border-light);
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 6px;
-      font-size: 0.82rem;
+      font-size: clamp(0.75rem, 1.8vw, 0.82rem);
       color: var(--text);
     }
     .meta-tag strong { color: var(--accent); }
 
-    /* Bus Visual Layout */
+    /* Bus Visual Layout (Fluid & Adaptive for All Screen Sizes) */
     .bus-container {
       background: #0a0f1d;
       border: 2px solid #1e293b;
-      border-radius: 16px;
-      padding: 24px;
-      max-width: 520px;
-      margin: 0 auto 20px auto;
+      border-radius: 14px;
+      padding: clamp(10px, 3vw, 20px);
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto 16px auto;
       box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
     }
     .bus-front {
       background: #1e293b;
-      border-radius: 10px 10px 4px 4px;
-      padding: 8px;
+      border-radius: 8px 8px 4px 4px;
+      padding: 6px 12px;
       text-align: center;
-      font-size: 0.82rem;
+      font-size: clamp(0.72rem, 2vw, 0.8rem);
       font-weight: 600;
       color: var(--text-muted);
-      letter-spacing: 1px;
-      margin-bottom: 20px;
+      letter-spacing: 0.8px;
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 20px;
     }
     .deck-title {
-      font-size: 0.85rem;
+      font-size: clamp(0.78rem, 2vw, 0.84rem);
       font-weight: 600;
       color: var(--accent);
-      margin: 16px 0 10px 0;
+      margin: 14px 0 8px 0;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       display: flex;
@@ -251,33 +291,37 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      width: 100%;
     }
     .seat-row-label {
-      font-size: 0.75rem;
+      font-size: clamp(0.65rem, 2vw, 0.74rem);
       color: var(--text-muted);
-      width: 48px;
+      width: clamp(34px, 8vw, 44px);
       font-family: 'Fira Code', monospace;
+      flex-shrink: 0;
     }
     .seat-group {
       display: flex;
-      gap: 8px;
+      gap: clamp(4px, 1.2vw, 8px);
+      flex-shrink: 0;
     }
     .aisle-gap {
-      width: 32px;
+      width: clamp(14px, 3vw, 28px);
       text-align: center;
       font-size: 0.7rem;
       color: #4b5563;
       user-select: none;
+      flex-shrink: 0;
     }
 
-    /* Seat Buttons */
+    /* Responsive Seat Buttons */
     .seat-btn {
-      width: 52px;
-      height: 44px;
-      border-radius: 8px;
+      width: clamp(38px, 10.5vw, 50px);
+      height: clamp(36px, 9.5vw, 44px);
+      border-radius: 6px;
       font-family: 'Fira Code', monospace;
-      font-size: 0.82rem;
+      font-size: clamp(0.68rem, 2.2vw, 0.8rem);
       font-weight: 600;
       display: flex;
       flex-direction: column;
@@ -286,8 +330,8 @@
       cursor: pointer;
       transition: all 0.15s ease;
       user-select: none;
-      position: relative;
       border: 1px solid transparent;
+      padding: 0;
     }
     .seat-btn.available {
       background: var(--seat-avail-bg);
@@ -297,66 +341,65 @@
     .seat-btn.available:hover {
       background: #047857;
       border-color: #34d399;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.4);
+      transform: translateY(-1px);
     }
     .seat-btn.selected {
       background: var(--seat-selected-bg) !important;
       border-color: var(--seat-selected-border) !important;
       color: var(--seat-selected-text) !important;
-      transform: scale(1.05);
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+      transform: scale(1.04);
     }
     .seat-btn.booked {
       background: var(--seat-booked-bg);
       border-color: var(--seat-booked-border);
       color: var(--seat-booked-text);
       cursor: not-allowed;
-      opacity: 0.6;
+      opacity: 0.65;
     }
 
     /* Seat Legend */
     .seat-legend {
       display: flex;
       justify-content: center;
-      gap: 20px;
-      margin-top: 16px;
-      padding-top: 14px;
+      gap: 14px;
+      margin-top: 14px;
+      padding-top: 12px;
       border-top: 1px solid var(--border-light);
       flex-wrap: wrap;
     }
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
+      gap: 6px;
+      font-size: clamp(0.72rem, 1.8vw, 0.8rem);
       color: var(--text-muted);
     }
     .legend-box {
-      width: 20px;
-      height: 18px;
-      border-radius: 4px;
+      width: 16px;
+      height: 15px;
+      border-radius: 3px;
     }
 
-    /* Passenger Form */
+    /* Form Fields */
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .form-group label {
       display: block;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 500;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .form-control {
       width: 100%;
       background: #0f172a;
       border: 1px solid var(--border-light);
       color: #fff;
-      padding: 10px 12px;
+      padding: 9px 12px;
       border-radius: 6px;
-      font-size: 0.9rem;
+      font-size: 16px; /* Prevents auto-zoom on mobile */
       font-family: inherit;
     }
     .form-control:focus {
@@ -368,16 +411,17 @@
       background: #0f172a;
       border: 1px solid var(--border-light);
       border-radius: 8px;
-      padding: 14px;
-      margin-bottom: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
     }
     .passenger-card-header {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       color: var(--accent);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
     .primary-btn {
       width: 100%;
@@ -386,7 +430,7 @@
       border: none;
       padding: 12px;
       border-radius: 8px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -394,11 +438,11 @@
       justify-content: center;
       gap: 8px;
       transition: all 0.2s;
-      margin-top: 14px;
+      margin-top: 12px;
     }
     .primary-btn:hover {
       background: #1d4ed8;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
     }
     .danger-btn {
       background: #dc2626;
@@ -421,54 +465,60 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      height: 640px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      height: clamp(380px, 60vh, 600px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
     }
     .term-top {
       background: #111827;
-      padding: 10px 16px;
+      padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--card-border);
+      flex-shrink: 0;
     }
     .term-controls {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     .term-circle {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
     }
     .term-title {
       font-family: 'Fira Code', monospace;
-      font-size: 0.8rem;
+      font-size: clamp(0.7rem, 2vw, 0.78rem);
       color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .term-screen {
       flex: 1;
-      padding: 16px;
+      padding: 12px 14px;
       font-family: 'Fira Code', monospace;
-      font-size: 0.86rem;
+      font-size: clamp(0.76rem, 1.8vw, 0.84rem);
       color: #e5e7eb;
       overflow-y: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-      line-height: 1.5;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.45;
+      -webkit-overflow-scrolling: touch;
     }
     .term-input-bar {
       background: #0b1120;
       border-top: 1px solid var(--border-light);
-      padding: 10px 16px;
+      padding: 8px 14px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      flex-shrink: 0;
     }
     .term-prompt {
       font-family: 'Fira Code', monospace;
-      font-size: 0.9rem;
+      font-size: clamp(0.78rem, 2vw, 0.88rem);
       color: var(--accent);
       font-weight: 600;
       white-space: nowrap;
@@ -479,26 +529,31 @@
       border: none;
       color: #fff;
       font-family: 'Fira Code', monospace;
-      font-size: 0.92rem;
+      font-size: 16px; /* Prevents auto-zoom on mobile */
       outline: none;
+      min-width: 80px;
     }
 
     /* Fast Action Chips for Terminal */
     .quick-actions {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+      -webkit-overflow-scrolling: touch;
     }
     .action-chip {
       background: #1f2937;
       border: 1px solid var(--border-light);
       color: var(--text);
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 6px;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       cursor: pointer;
       transition: all 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .action-chip:hover {
       background: #374151;
@@ -506,33 +561,44 @@
       border-color: var(--accent);
     }
 
-    /* Tables */
+    /* Responsive Data Tables */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+    }
     .data-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.88rem;
-      margin-top: 10px;
+      font-size: clamp(0.78rem, 1.8vw, 0.86rem);
+      min-width: 620px;
     }
     .data-table th, .data-table td {
-      padding: 10px 14px;
+      padding: 9px 12px;
       text-align: left;
       border-bottom: 1px solid var(--border-light);
+      white-space: nowrap;
     }
     .data-table th {
       background: #1e293b;
       color: var(--text-bright);
       font-weight: 600;
+      position: sticky;
+      top: 0;
     }
-    .data-table tr:hover { background: rgba(255, 255, 255, 0.02); }
+    .data-table tr:hover { background: rgba(255, 255, 255, 0.03); }
 
-    /* Receipt Box */
+    /* Responsive Receipt Modal */
     .receipt-modal {
       display: none;
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.8);
       z-index: 1000;
-      padding: 20px;
+      padding: 12px;
       overflow-y: auto;
       align-items: center;
       justify-content: center;
@@ -541,11 +607,30 @@
       background: #111827;
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      max-width: 650px;
+      max-width: 620px;
       width: 100%;
-      padding: 24px;
+      padding: clamp(14px, 3vw, 22px);
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
       font-family: 'Fira Code', monospace;
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+    .receipt-content {
+      white-space: pre;
+      overflow-x: auto;
+      font-size: clamp(0.7rem, 1.9vw, 0.82rem);
+      line-height: 1.4;
+      padding-bottom: 8px;
+    }
+
+    /* Small Mobile Tweaks (<= 480px) */
+    @media (max-width: 480px) {
+      body { padding: 8px; }
+      .header-actions { width: 100%; justify-content: stretch; }
+      .header-actions .nav-btn { flex: 1; justify-content: center; }
+      .card { padding: 12px; }
+      .bus-container { padding: 10px 6px; }
+      .aisle-gap { width: 12px; }
     }
   </style>
 </head>
@@ -559,31 +644,33 @@
       </div>
       <div class="header-actions">
         <a href="https://github.com/sumi-spec/nammaroute-travels" target="_blank" class="nav-btn">
-          📂 GitHub Repository
+          📂 GitHub Repo
         </a>
         <button onclick="resetAllDemoData()" class="nav-btn" style="color: var(--accent-yellow);">
-          🔄 Reset Default Data
+          🔄 Reset Demo Data
         </button>
       </div>
     </header>
 
-    <!-- Navigation Tabs -->
-    <div class="tabs-bar">
-      <button class="tab-btn active" onclick="switchTab('gui-booking')">
-        💺 Visual Seat Booking
-      </button>
-      <button class="tab-btn" onclick="switchTab('terminal')">
-        💻 Interactive Console Terminal
-      </button>
-      <button class="tab-btn" onclick="switchTab('all-buses')">
-        🚍 View All Buses & Routes
-      </button>
-      <button class="tab-btn" onclick="switchTab('cancellation')">
-        ❌ Cancel & Refund
-      </button>
-      <button class="tab-btn" onclick="switchTab('manifest')">
-        📋 Passenger Manifests
-      </button>
+    <!-- Navigation Tabs Bar -->
+    <div class="tabs-wrapper">
+      <div class="tabs-bar">
+        <button class="tab-btn active" onclick="switchTab('gui-booking')">
+          💺 Visual Seat Booking
+        </button>
+        <button class="tab-btn" onclick="switchTab('terminal')">
+          💻 Interactive Console Terminal
+        </button>
+        <button class="tab-btn" onclick="switchTab('all-buses')">
+          🚍 View All Buses & Routes
+        </button>
+        <button class="tab-btn" onclick="switchTab('cancellation')">
+          ❌ Cancel & Refund
+        </button>
+        <button class="tab-btn" onclick="switchTab('manifest')">
+          📋 Passenger Manifests
+        </button>
+      </div>
     </div>
 
     <!-- TAB 1: VISUAL SEAT BOOKING -->
@@ -592,13 +679,13 @@
         <!-- Seat Map Column -->
         <div class="card">
           <div class="card-title">
-            <span>Visual Bus Seat Layout (Click to Select Seats)</span>
-            <span id="routeTypeTag" style="font-size: 0.85rem; font-weight: normal; color: var(--accent);">2x2 Seater</span>
+            <span>Visual Bus Seat Layout (Click to Select)</span>
+            <span id="routeTypeTag" style="font-size: 0.82rem; font-weight: normal; color: var(--accent);">2x2 Seater</span>
           </div>
 
           <!-- Route Selector -->
           <div class="route-bar">
-            <label for="routeSelect">Select Route:</label>
+            <label for="routeSelect">Route:</label>
             <select id="routeSelect" onchange="onRouteChanged()">
               <!-- Populated via JS -->
             </select>
@@ -606,9 +693,9 @@
 
           <div class="route-meta">
             <span class="meta-tag">Journey: <strong id="metaJourney">-</strong></span>
-            <span class="meta-tag">Departure: <strong id="metaDep">-</strong></span>
+            <span class="meta-tag">Dep: <strong id="metaDep">-</strong></span>
             <span class="meta-tag">Fare: <strong id="metaFare">₹-</strong></span>
-            <span class="meta-tag">Available: <strong id="metaAvail" style="color: var(--accent-green);">-</strong></span>
+            <span class="meta-tag">Avail: <strong id="metaAvail" style="color: var(--accent-green);">-</strong></span>
             <span class="meta-tag">Booked: <strong id="metaBooked" style="color: var(--accent-red);">-</strong></span>
           </div>
 
@@ -616,7 +703,7 @@
           <div class="bus-container">
             <div class="bus-front">
               <span>🚘 DRIVER CABIN</span>
-              <span>[ENTRY DOOR]</span>
+              <span>[DOOR]</span>
             </div>
 
             <!-- Dynamic Seats Injected Here -->
@@ -644,21 +731,21 @@
         <div class="card">
           <div class="card-title">
             <span>Reservation Details</span>
-            <span id="selectedCountBadge" style="font-size: 0.82rem; background: #1e3a8a; padding: 2px 8px; border-radius: 12px; color: #93c5fd;">0 Seats Selected</span>
+            <span id="selectedCountBadge" style="font-size: 0.8rem; background: #1e3a8a; padding: 2px 8px; border-radius: 12px; color: #93c5fd;">0 Seats Selected</span>
           </div>
 
-          <div id="noSeatNotice" style="padding: 24px 0; text-align: center; color: var(--text-muted);">
-            👈 Please click on one or more available seats on the bus layout to begin reservation.
+          <div id="noSeatNotice" style="padding: 24px 0; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+            👈 Tap on any available green seat on the bus layout to begin reservation.
           </div>
 
           <div id="bookingFormSection" style="display: none;">
-            <div style="background: #0f172a; padding: 12px 14px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--border-light);">
+            <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border-light);">
               <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                <span style="font-size: 0.85rem; color: var(--text-muted);">Selected Seats:</span>
+                <span style="font-size: 0.82rem; color: var(--text-muted);">Selected Seats:</span>
                 <strong id="displaySelectedSeats" style="font-family: 'Fira Code', monospace; color: var(--accent);">-</strong>
               </div>
               <div style="display: flex; justify-content: space-between;">
-                <span style="font-size: 0.85rem; color: var(--text-muted);">Total Fare:</span>
+                <span style="font-size: 0.82rem; color: var(--text-muted);">Total Fare:</span>
                 <strong id="displayTotalFare" style="font-size: 1.05rem; color: var(--accent-green);">₹0.00</strong>
               </div>
             </div>
@@ -679,7 +766,6 @@
     <!-- TAB 2: INTERACTIVE CONSOLE TERMINAL -->
     <div id="tab-terminal" class="tab-content">
       <div class="quick-actions">
-        <span style="font-size: 0.85rem; color: var(--text-muted); align-self: center;">Quick Menu:</span>
         <button class="action-chip" onclick="termCommand('1')">1. Add Bus</button>
         <button class="action-chip" onclick="termCommand('2')">2. View Buses</button>
         <button class="action-chip" onclick="termCommand('3')">3. Seat Map</button>
@@ -697,7 +783,7 @@
             <span class="term-circle" style="background: #f59e0b;"></span>
             <span class="term-circle" style="background: #10b981;"></span>
           </div>
-          <span class="term-title">nammaroute-travels@terminal: java -cp bin com.nammaroute.Main</span>
+          <span class="term-title">nammaroute@console: java -cp bin com.nammaroute.Main</span>
           <span></span>
         </div>
         <div class="term-screen" id="consoleScreen"></div>
@@ -715,7 +801,7 @@
           <span>Active Bus Services Schedule</span>
           <button class="nav-btn" onclick="openAddBusModal()">+ Add New Bus</button>
         </div>
-        <div style="overflow-x: auto;">
+        <div class="table-container">
           <table class="data-table">
             <thead>
               <tr>
@@ -740,43 +826,43 @@
 
     <!-- TAB 4: CANCELLATION & REFUND -->
     <div id="tab-cancellation" class="tab-content">
-      <div class="card" style="max-width: 750px; margin: 0 auto;">
+      <div class="card" style="max-width: 680px; margin: 0 auto;">
         <div class="card-title">
           <span>Ticket Cancellation & 100% Refund Processing</span>
         </div>
 
         <div class="form-group">
           <label>Enter Booking PNR Number</label>
-          <div style="display: flex; gap: 10px;">
+          <div style="display: flex; gap: 8px;">
             <input type="text" id="cancelPnrInput" class="form-control" placeholder="e.g. PNR-85021 or PNR-12289">
-            <button class="nav-btn" style="background: #2563eb; color: #fff;" onclick="lookupBookingForCancel()">
+            <button class="nav-btn" style="background: #2563eb; color: #fff; flex-shrink: 0;" onclick="lookupBookingForCancel()">
               Lookup
             </button>
           </div>
         </div>
 
-        <div id="cancelDetailsSection" style="display: none; margin-top: 18px; border-top: 1px solid var(--border-light); padding-top: 18px;">
-          <div style="background: #0f172a; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-            <p><strong>PNR:</strong> <span id="cancelPnrDisplay" style="color: var(--accent); font-family: 'Fira Code', monospace;"></span></p>
-            <p><strong>Route:</strong> <span id="cancelRouteDisplay"></span></p>
+        <div id="cancelDetailsSection" style="display: none; margin-top: 16px; border-top: 1px solid var(--border-light); padding-top: 16px;">
+          <div style="background: #0f172a; border-radius: 8px; padding: 12px; margin-bottom: 14px; font-size: 0.88rem;">
+            <p style="margin-bottom: 4px;"><strong>PNR:</strong> <span id="cancelPnrDisplay" style="color: var(--accent); font-family: 'Fira Code', monospace;"></span></p>
+            <p style="margin-bottom: 4px;"><strong>Route:</strong> <span id="cancelRouteDisplay"></span></p>
             <p><strong>Status:</strong> <span id="cancelStatusDisplay"></span></p>
           </div>
 
-          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Select Seats to Cancel:</label>
-          <div id="cancelSeatsList" style="margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem;">Select Seats to Cancel:</label>
+          <div id="cancelSeatsList" style="margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px;">
             <!-- Checkboxes injected -->
           </div>
 
-          <div style="background: #172554; border: 1px solid #1e40af; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 0.88rem;">
+          <div style="background: #172554; border: 1px solid #1e40af; border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; font-size: 0.82rem;">
             ℹ️ Demonstration Refund Policy: <strong>100% full refund</strong> for all cancelled seats.
             Seats will be immediately released back to the visual seat map.
           </div>
 
-          <div style="display: flex; gap: 10px;">
-            <button class="danger-btn" style="flex: 1;" onclick="executePartialOrFullCancel()">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="danger-btn" style="flex: 1 1 180px;" onclick="executePartialOrFullCancel()">
               Confirm Cancellation & Refund
             </button>
-            <button class="nav-btn" onclick="document.getElementById('cancelDetailsSection').style.display='none'">
+            <button class="nav-btn" style="flex: 1 1 100px; justify-content: center;" onclick="document.getElementById('cancelDetailsSection').style.display='none'">
               Cancel
             </button>
           </div>
@@ -789,14 +875,14 @@
       <div class="card">
         <div class="card-title">
           <span>Official Passenger Manifest Report</span>
-          <div style="display: flex; gap: 10px; align-items: center;">
-            <label style="font-size: 0.85rem; color: var(--text-muted);">Route:</label>
-            <select id="manifestRouteSelect" onchange="renderManifestTable()" style="background: #0f172a; border: 1px solid var(--border-light); color: #fff; padding: 6px 12px; border-radius: 6px;">
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <label style="font-size: 0.82rem; color: var(--text-muted);">Route:</label>
+            <select id="manifestRouteSelect" onchange="renderManifestTable()" style="background: #0f172a; border: 1px solid var(--border-light); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 16px;">
             </select>
           </div>
         </div>
 
-        <div style="overflow-x: auto;">
+        <div class="table-container">
           <table class="data-table">
             <thead>
               <tr>
@@ -815,7 +901,7 @@
           </table>
         </div>
 
-        <div style="margin-top: 20px; padding: 14px; background: #0f172a; border-radius: 8px; display: flex; gap: 20px; flex-wrap: wrap;" id="manifestSummaryBar">
+        <div style="margin-top: 16px; padding: 12px; background: #0f172a; border-radius: 8px; display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.85rem;" id="manifestSummaryBar">
           <!-- Summary stats -->
         </div>
       </div>
@@ -826,12 +912,12 @@
   <!-- RECEIPT MODAL -->
   <div class="receipt-modal" id="receiptModal" onclick="closeReceiptModal(event)">
     <div class="receipt-box" onclick="event.stopPropagation()">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 10px; margin-bottom: 14px;">
-        <span style="font-weight: 700; color: var(--accent);">✅ OFFICIAL BOOKING RECEIPT</span>
-        <button onclick="closeReceiptModal()" style="background: transparent; border: none; color: #9ca3af; font-size: 1.2rem; cursor: pointer;">✕</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 10px; margin-bottom: 12px;">
+        <span style="font-weight: 700; color: var(--accent); font-size: 0.95rem;">✅ OFFICIAL BOOKING RECEIPT</span>
+        <button onclick="closeReceiptModal()" style="background: transparent; border: none; color: #9ca3af; font-size: 1.3rem; cursor: pointer; padding: 4px 8px;">✕</button>
       </div>
-      <div id="receiptModalBody" style="white-space: pre-wrap; font-size: 0.85rem;"></div>
-      <button class="primary-btn" onclick="closeReceiptModal()" style="margin-top: 16px;">
+      <div id="receiptModalBody" class="receipt-content"></div>
+      <button class="primary-btn" onclick="closeReceiptModal()" style="margin-top: 14px;">
         Close Receipt
       </button>
     </div>
@@ -839,7 +925,6 @@
 
   <!-- JAVASCRIPT STATE ENGINE & CONTROLLER -->
   <script>
-    // --- PERSISTENT STATE ---
     const STORAGE_KEY = 'nammaroute_travels_state_v1';
 
     function getInitialState() {
@@ -884,11 +969,9 @@
     function loadState() {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          return JSON.parse(stored);
-        }
+        if (stored) return JSON.parse(stored);
       } catch (e) {
-        console.error('Failed to load storage, using default', e);
+        console.error('Failed to load storage', e);
       }
       return getInitialState();
     }
@@ -911,7 +994,6 @@
       }
     }
 
-    // --- TAB SWITCHER ---
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -931,7 +1013,7 @@
       } else if (tabId === 'manifest') {
         renderManifestTable();
       } else if (tabId === 'terminal') {
-        document.getElementById('terminalInput').focus();
+        setTimeout(() => document.getElementById('terminalInput').focus(), 50);
       }
     }
 
@@ -962,7 +1044,6 @@
       const bus = appState.buses[routeId];
       if (!bus) return;
 
-      // Update meta tags
       document.getElementById('metaJourney').innerText = `${bus.origin} ➔ ${bus.destination}`;
       document.getElementById('metaDep').innerText = bus.dep;
       document.getElementById('metaFare').innerText = `₹${bus.price.toFixed(2)}`;
@@ -991,23 +1072,20 @@
 
         const rowLabel = document.createElement('div');
         rowLabel.className = 'seat-row-label';
-        rowLabel.innerText = `Row ${String(row).padStart(2, '0')}`;
+        rowLabel.innerText = `R${row}`;
         rowDiv.appendChild(rowLabel);
 
-        // Left Group (Window A, Aisle B)
         const leftGroup = document.createElement('div');
         leftGroup.className = 'seat-group';
         leftGroup.appendChild(createSeatButton(`${row}A`, `0${row}A`, bus));
         leftGroup.appendChild(createSeatButton(`${row}B`, `0${row}B`, bus));
         rowDiv.appendChild(leftGroup);
 
-        // Aisle Gap
         const aisle = document.createElement('div');
         aisle.className = 'aisle-gap';
         aisle.innerText = '||';
         rowDiv.appendChild(aisle);
 
-        // Right Group (Aisle C, Window D)
         const rightGroup = document.createElement('div');
         rightGroup.className = 'seat-group';
         rightGroup.appendChild(createSeatButton(`${row}C`, `0${row}C`, bus));
@@ -1019,7 +1097,6 @@
     }
 
     function renderSleeperLayout(container, bus) {
-      // Lower Deck
       const lowerHeader = document.createElement('div');
       lowerHeader.className = 'deck-title';
       lowerHeader.innerText = '🔻 Lower Deck (12 Berths)';
@@ -1030,7 +1107,6 @@
         container.appendChild(createSleeperRow(bus, 'L', idx + 1, r[0], r[1], r[2]));
       });
 
-      // Upper Deck
       const upperHeader = document.createElement('div');
       upperHeader.className = 'deck-title';
       upperHeader.innerText = '🔺 Upper Deck (12 Berths)';
@@ -1047,23 +1123,20 @@
 
       const rowLabel = document.createElement('div');
       rowLabel.className = 'seat-row-label';
-      rowLabel.innerText = `Row ${rowNum}`;
+      rowLabel.innerText = `R${rowNum}`;
       rowDiv.appendChild(rowLabel);
 
-      // Left Group (2 berths)
       const leftGroup = document.createElement('div');
       leftGroup.className = 'seat-group';
       leftGroup.appendChild(createSeatButton(`${deck}${b1}`, `${deck}${String(b1).padStart(2, '0')}`, bus));
       leftGroup.appendChild(createSeatButton(`${deck}${b2}`, `${deck}${String(b2).padStart(2, '0')}`, bus));
       rowDiv.appendChild(leftGroup);
 
-      // Aisle
       const aisle = document.createElement('div');
       aisle.className = 'aisle-gap';
       aisle.innerText = '||';
       rowDiv.appendChild(aisle);
 
-      // Right Group (1 berth)
       const rightGroup = document.createElement('div');
       rightGroup.className = 'seat-group';
       rightGroup.appendChild(createSeatButton(`${deck}${b3}`, `${deck}${String(b3).padStart(2, '0')}`, bus));
@@ -1082,12 +1155,12 @@
 
       if (isBooked) {
         btn.classList.add('booked');
-        btn.innerHTML = `<span style="font-size: 0.7rem;">[ XX ]</span><span>Booked</span>`;
+        btn.innerHTML = `<span style="font-size: 0.65rem;">[XX]</span><span style="font-size: 0.58rem;">Book</span>`;
         btn.disabled = true;
       } else {
         btn.classList.add('available');
         if (isSelected) btn.classList.add('selected');
-        btn.innerHTML = `<span>${displayLabel}</span><span style="font-size: 0.65rem; opacity: 0.8;">Avail</span>`;
+        btn.innerHTML = `<span>${displayLabel}</span><span style="font-size: 0.58rem; opacity: 0.85;">Avail</span>`;
         btn.onclick = () => toggleSeatSelection(seatKey);
       }
       return btn;
@@ -1131,7 +1204,6 @@
       const totalFare = selectedSeats.length * bus.price;
       displayFare.innerText = `₹${totalFare.toFixed(2)}`;
 
-      // Rebuild passenger inputs while preserving already entered names
       const existingValues = {};
       container.querySelectorAll('.passenger-card').forEach(card => {
         const s = card.getAttribute('data-seat');
@@ -1152,14 +1224,14 @@
         card.setAttribute('data-seat', seat);
         card.innerHTML = `
           <div class="passenger-card-header">
-            <span>Passenger ${idx + 1} (Assigned Seat: <strong>${seat}</strong>)</span>
-            <span>Fare: ₹${bus.price}</span>
+            <span>Pass. ${idx + 1} (Seat: <strong>${seat}</strong>)</span>
+            <span>₹${bus.price}</span>
           </div>
           <div class="form-group">
             <label>Full Name *</label>
-            <input type="text" class="form-control pass-name" placeholder="Enter passenger name" value="${old.name}">
+            <input type="text" class="form-control pass-name" placeholder="Passenger name" value="${old.name}">
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
             <div class="form-group">
               <label>Age (1-120) *</label>
               <input type="number" class="form-control pass-age" min="1" max="120" placeholder="e.g. 28" value="${old.age}">
@@ -1183,7 +1255,6 @@
       const bus = appState.buses[routeId];
       if (!bus || selectedSeats.length === 0) return;
 
-      // Atomic validation: verify none became booked in meantime
       for (const s of selectedSeats) {
         if (bus.booked.includes(s)) {
           alert(`Booking Failed: Seat ${s} was already booked! Atomic transaction aborted.`);
@@ -1192,7 +1263,6 @@
         }
       }
 
-      // Read passengers
       const passengers = [];
       const cards = document.querySelectorAll('#passengerFormsContainer .passenger-card');
       for (let i = 0; i < cards.length; i++) {
@@ -1221,9 +1291,7 @@
         });
       }
 
-      // Commit Atomic Booking
       selectedSeats.forEach(s => bus.booked.push(s));
-
       const pnr = generatePnr();
       const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
 
@@ -1235,14 +1303,9 @@
       };
 
       saveState();
-
-      // Show receipt modal
       showReceipt(pnr);
-
-      // Terminal notification
       termPrint(`\n[WEB BOOKING SUCCESS] ${pnr} booked on ${routeId} for seats [${selectedSeats.join(', ')}]. Total: ₹${passengers.length * bus.price}\n`);
 
-      // Reset selection
       selectedSeats = [];
       renderVisualSeatMap();
       renderBusesTable();
@@ -1301,8 +1364,10 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
       document.getElementById('receiptModal').style.display = 'flex';
     }
 
-    function closeReceiptModal() {
-      document.getElementById('receiptModal').style.display = 'none';
+    function closeReceiptModal(event) {
+      if (!event || event.target.id === 'receiptModal' || event.target.tagName === 'BUTTON') {
+        document.getElementById('receiptModal').style.display = 'none';
+      }
     }
 
     // --- TAB 3: ALL BUSES ---
@@ -1324,7 +1389,7 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
           <td><span style="color: ${avail > 0 ? 'var(--accent-green)' : 'var(--accent-red)'}; font-weight: 600;">${avail}</span></td>
           <td>${b.total}</td>
           <td>
-            <button class="nav-btn" style="padding: 4px 10px; font-size: 0.78rem;" onclick="bookForBusRoute('${b.routeId}')">
+            <button class="nav-btn" style="padding: 4px 10px; font-size: 0.76rem;" onclick="bookForBusRoute('${b.routeId}')">
               Book
             </button>
           </td>
@@ -1415,13 +1480,13 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
         const item = document.createElement('div');
         item.style.display = 'flex';
         item.style.alignItems = 'center';
-        item.style.gap = '10px';
+        item.style.gap = '8px';
         item.style.background = '#0f172a';
         item.style.padding = '8px 12px';
         item.style.borderRadius = '6px';
         item.innerHTML = `
-          <input type="checkbox" id="chk_${p.seat}" value="${p.seat}" checked>
-          <label for="chk_${p.seat}" style="cursor: pointer;">
+          <input type="checkbox" id="chk_${p.seat}" value="${p.seat}" checked style="width: 18px; height: 18px;">
+          <label for="chk_${p.seat}" style="cursor: pointer; font-size: 0.85rem;">
             Seat <strong>${p.seat}</strong>: ${p.name} (₹${p.fare} Refund)
           </label>
         `;
@@ -1447,13 +1512,11 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
       let refundTotal = 0;
 
       seatsToCancel.forEach(seatNum => {
-        // Find passenger
-        const p = booking.passengers.find(x => x.seat === seatNum && x.status === 'CONFIRMED');
-        if (p) {
-          p.status = 'CANCELLED';
-          refundTotal += p.fare;
+        const pass = booking.passengers.find(x => x.seat === seatNum && x.status === 'CONFIRMED');
+        if (pass) {
+          pass.status = 'CANCELLED';
+          refundTotal += pass.fare;
         }
-        // Release from bus
         if (bus) {
           bus.booked = bus.booked.filter(s => s !== seatNum);
         }
@@ -1495,11 +1558,10 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
         }
       }
 
-      // Natural Sort by Seat Number
       entries.sort((a, b) => naturalSeatSort(a.seat, b.seat));
 
       if (entries.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">No passengers currently booked on route ${routeId}.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 18px;">No passengers currently booked on route ${routeId}.</td></tr>`;
       } else {
         entries.forEach(e => {
           const tr = document.createElement('tr');
@@ -1537,10 +1599,7 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
     const termInput = document.getElementById('terminalInput');
     const termPromptLabel = document.getElementById('termPromptLabel');
 
-    let termState = {
-      step: 'MENU',
-      context: {}
-    };
+    let termState = { step: 'MENU', context: {} };
 
     function termPrint(text) {
       termScreen.innerText += text + '\n';
@@ -1674,7 +1733,6 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
           const rawSeats = raw.split(/[\s,]+/).map(s => s.trim().toUpperCase()).filter(Boolean);
           const cBus = termState.context.bus;
 
-          // Check duplicates inside request
           const setCheck = new Set(rawSeats);
           if (setCheck.size !== rawSeats.length) {
             termPrint(`>> Booking Failed: Duplicate seats in request.\n`);
@@ -1684,7 +1742,6 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
             break;
           }
 
-          // Check availability
           let fail = false;
           for (const s of rawSeats) {
             if (cBus.booked.includes(s)) {
@@ -1734,7 +1791,6 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
           if (termState.context.passIndex < termState.context.seats.length) {
             promptNextPassenger();
           } else {
-            // All passenger info collected, commit booking
             const bookedPnr = generatePnr();
             const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
             termState.context.seats.forEach(s => termState.context.bus.booked.push(s));
@@ -1749,8 +1805,6 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
             saveState();
             renderVisualSeatMap();
             renderBusesTable();
-
-            // Print receipt to console
             printTermReceipt(bookedPnr);
 
             termState.step = 'MENU';
@@ -2080,14 +2134,12 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
 ==========================================================================\n`);
     }
 
-    // Input Keylistener
     termInput.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         processTerminalInput();
       }
     });
 
-    // --- INITIALIZATION ---
     function initUI() {
       populateRouteSelectors();
       renderVisualSeatMap();
