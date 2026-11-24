@@ -1,0 +1,21 @@
+# Bytecode & build artifacts
+bin/
+target/
+*.class
+
+# Test data & logs
+test_data/
+*.log
+
+# IDE specific files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS generated
+Thumbs.db
+Desktop.ini
+.DS_Store

@@ -1,0 +1,4 @@
+RouteId,Origin,Destination,DepartureTime,BasePrice,BusType
+NR-101,Bengaluru,Goa,2026-11-27 21:30,1200.00,SEATER
+NR-102,Bengaluru,Hyderabad,2026-11-28 20:00,900.00,SLEEPER
+NR-103,Bengaluru,Chennai,2026-11-29 22:00,800.00,SEATER

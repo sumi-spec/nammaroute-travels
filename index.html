@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NammaRoute Travels - Bus Booking Management System (Live Demo)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent-green: #3fb950;
+      --accent-red: #f85149;
+      --accent-yellow: #d29922;
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --text-bright: #f0f6fc;
+      --term-bg: #030712;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 24px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      background: linear-gradient(135deg, #1f2937, #111827);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .brand h1 {
+      font-size: 1.8rem;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand h1 span {
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .badge-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: #21262d;
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .badge.green { color: var(--accent-green); border-color: rgba(63, 185, 80, 0.4); }
+    .badge.yellow { color: var(--accent-yellow); border-color: rgba(210, 153, 34, 0.4); }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      font-size: 1.15rem;
+      color: var(--text-bright);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    button {
+      background: #21262d;
+      color: var(--text-bright);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background: #30363d;
+      border-color: var(--accent);
+      color: #fff;
+    }
+    button.active {
+      background: #1f6feb;
+      border-color: #58a6ff;
+      color: #fff;
+    }
+    button .key {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .terminal-container {
+      background: var(--term-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 600px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    }
+    .terminal-header {
+      background: #111827;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .term-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+    .term-title {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-family: 'Fira Code', monospace;
+      margin-left: 8px;
+    }
+    .terminal-body {
+      flex: 1;
+      padding: 16px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88rem;
+      color: #e5e7eb;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.5;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    input, select {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      color: var(--text-bright);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.88rem;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .links-bar {
+      margin-top: 16px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .links-bar a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .links-bar a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>🚌 <span>NammaRoute Travels</span></h1>
+        <p>Bus Booking Management System – Core Java 17 Console Simulation</p>
+      </div>
+      <div class="badge-bar">
+        <span class="badge green">● Java 17 Core</span>
+        <span class="badge">Atomic Reservations</span>
+        <span class="badge yellow">CSV Persistence</span>
+        <span class="badge">Live Web Simulator</span>
+      </div>
+    </header>
+
+    <div class="main-grid">
+      <!-- Sidebar Controls -->
+      <div class="sidebar">
+        <div class="card">
+          <h2>Actions & Operations</h2>
+          <div class="btn-group">
+            <button onclick="viewAllBuses()">
+              <span>2. View All Buses</span>
+              <span class="key">Option 2</span>
+            </button>
+            <button onclick="viewSeatMap('NR-101')">
+              <span>3. View Seat Map (NR-101 Seater)</span>
+              <span class="key">Option 3</span>
+            </button>
+            <button onclick="viewSeatMap('NR-102')">
+              <span>3. View Seat Map (NR-102 Sleeper)</span>
+              <span class="key">Option 3</span>
+            </button>
+            <button onclick="triggerSampleBooking()">
+              <span>4. Book 2 Seats (Atomic Demo)</span>
+              <span class="key">Option 4</span>
+            </button>
+            <button onclick="triggerFailedBooking()">
+              <span>4. Test Booking Collision</span>
+              <span class="key">Atomic Fail</span>
+            </button>
+            <button onclick="triggerCancellation()">
+              <span>5. Partial Cancel + Refund</span>
+              <span class="key">Option 5</span>
+            </button>
+            <button onclick="viewManifest('NR-101')">
+              <span>6. Generate Manifest (NR-101)</span>
+              <span class="key">Option 6</span>
+            </button>
+            <button onclick="searchPnr('PNR-85021')">
+              <span>7. Search Booking by PNR</span>
+              <span class="key">Option 7</span>
+            </button>
+            <button onclick="resetConsole()">
+              <span>Clear Console / Restart</span>
+              <span class="key">Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Quick Interactive Booking</h2>
+          <div class="form-row">
+            <label>Bus Route</label>
+            <select id="selRoute">
+              <option value="NR-101">NR-101 (Bengaluru to Goa, ₹1200, 2x2 Seater)</option>
+              <option value="NR-102">NR-102 (Bengaluru to Hyderabad, ₹900, 2x1 Sleeper)</option>
+              <option value="NR-103">NR-103 (Bengaluru to Chennai, ₹800, 2x2 Seater)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Seat Numbers (e.g. 1C, 1D or L3)</label>
+            <input type="text" id="customSeats" placeholder="e.g. 1C, 1D" value="1C, 1D">
+          </div>
+          <div class="form-row">
+            <label>Passenger 1 Name</label>
+            <input type="text" id="custName1" value="Kavita Rao">
+          </div>
+          <div class="form-row">
+            <label>Passenger 2 Name (if multi-seat)</label>
+            <input type="text" id="custName2" value="Suresh Rao">
+          </div>
+          <button style="width: 100%; margin-top: 8px; justify-content: center; background: #238636; border-color: #2ea043;" onclick="executeCustomBooking()">
+            Book Selected Seats Now
+          </button>
+        </div>
+
+        <div class="card">
+          <h2>GitHub & Documentation</h2>
+          <div class="links-bar">
+            <a href="https://github.com/sumi-spec/nammaroute-travels" target="_blank">🔗 GitHub Repository</a>
+            <a href="https://github.com/sumi-spec" target="_blank">👤 sumi-spec Profile</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Terminal Display -->
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <span class="term-dot dot-red"></span>
+          <span class="term-dot dot-yellow"></span>
+          <span class="term-dot dot-green"></span>
+          <span class="term-title">nammaroute-travels@terminal: java com.nammaroute.Main</span>
+        </div>
+        <div class="terminal-body" id="termOutput"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const term = document.getElementById('termOutput');
+
+    function writeTerm(text, clear = false) {
+      if (clear) term.innerText = '';
+      term.innerText += text + '\n';
+      term.scrollTop = term.scrollHeight;
+    }
+
+    const state = {
+      buses: {
+        'NR-101': {
+          routeId: 'NR-101', origin: 'Bengaluru', destination: 'Goa',
+          dep: '2026-11-27 21:30', price: 1200, type: '2x2 Seater', total: 32,
+          booked: ['1A', '1B']
+        },
+        'NR-102': {
+          routeId: 'NR-102', origin: 'Bengaluru', destination: 'Hyderabad',
+          dep: '2026-11-28 20:00', price: 900, type: '2x1 Sleeper', total: 24,
+          booked: ['L1']
+        },
+        'NR-103': {
+          routeId: 'NR-103', origin: 'Bengaluru', destination: 'Chennai',
+          dep: '2026-11-29 22:00', price: 800, type: '2x2 Seater', total: 32,
+          booked: []
+        }
+      },
+      bookings: {
+        'PNR-85021': {
+          pnr: 'PNR-85021', routeId: 'NR-101', time: '2026-11-24 16:03',
+          passengers: [
+            { name: 'Rahul Sharma', age: 28, gender: 'M', seat: '1A', fare: 1200, status: 'CONFIRMED' },
+            { name: 'Priya Sharma', age: 26, gender: 'F', seat: '1B', fare: 1200, status: 'CONFIRMED' }
+          ]
+        }
+      }
+    };
+
+    function showBanner() {
+      writeTerm(`========================================
+       NAMMAROUTE TRAVELS               
+       BUS BOOKING SYSTEM               
+========================================
+
+1. Add New Bus
+2. View All Buses
+3. View Seat Availability
+4. Book Tickets
+5. Cancel Tickets
+6. Generate Passenger Manifest
+7. Search Booking by PNR
+8. Exit
+`);
+    }
+
+    function viewAllBuses() {
+      writeTerm(`
+==========================================================================================================
+                                      CURRENT BUS SERVICES SCHEDULE                                       
+==========================================================================================================
+Route ID   Origin           Destination      Departure          Type           Fare (INR) Available  Capacity  
+----------------------------------------------------------------------------------------------------------`);
+      for (const key in state.buses) {
+        const b = state.buses[key];
+        const avail = b.total - b.booked.length;
+        writeTerm(`${b.routeId.padEnd(10)} ${b.origin.padEnd(16)} ${b.destination.padEnd(16)} ${b.dep.padEnd(18)} ${b.type.padEnd(14)} Rs. ${b.price.toFixed(2).padEnd(10)} ${String(avail).padEnd(10)} ${b.total}`);
+      }
+      writeTerm(`==========================================================================================================\n`);
+    }
+
+    function viewSeatMap(routeId) {
+      const b = state.buses[routeId];
+      if (!b) return;
+      const bookedCount = b.booked.length;
+      const availCount = b.total - bookedCount;
+
+      writeTerm(`
+==========================================================================
+           VISUAL SEAT MAP - ROUTE: ${b.routeId} (${b.origin} -> ${b.destination})
+==========================================================================
+Bus Type    : ${b.type} (${b.total} Seats)
+Departure   : ${b.dep}
+Ticket Fare : Rs. ${b.price.toFixed(2)} per seat
+Capacity    : Total: ${b.total}  |  Booked: ${bookedCount}  |  Available: ${availCount}
+--------------------------------------------------------------------------`);
+
+      if (b.type.includes('Seater')) {
+        writeTerm(`                     [ FRONT / DRIVER CABIN ]
+          LEFT (WINDOW / AISLE)          RIGHT (AISLE / WINDOW)
+--------------------------------------------------------------------------`);
+        for (let r = 1; r <= 8; r++) {
+          const sA = `${r}A`, sB = `${r}B`, sC = `${r}C`, sD = `${r}D`;
+          const cA = b.booked.includes(sA) ? '[ XX]' : `[0${r}A]`;
+          const cB = b.booked.includes(sB) ? '[ XX]' : `[0${r}B]`;
+          const cC = b.booked.includes(sC) ? '[ XX]' : `[0${r}C]`;
+          const cD = b.booked.includes(sD) ? '[ XX]' : `[0${r}D]`;
+          writeTerm(`Row 0${r}:     ${cA} ${cB}        | AISLE |        ${cC} ${cD}`);
+        }
+      } else {
+        writeTerm(`>>> LOWER DECK (12 Berths - 2x1 Configuration)`);
+        const rows = [[1,2,3], [4,5,6], [7,8,9], [10,11,12]];
+        rows.forEach((row, i) => {
+          const c1 = b.booked.includes(`L${row[0]}`) ? '[ XX]' : `[L${String(row[0]).padStart(2,'0')}]`;
+          const c2 = b.booked.includes(`L${row[1]}`) ? '[ XX]' : `[L${String(row[1]).padStart(2,'0')}]`;
+          const c3 = b.booked.includes(`L${row[2]}`) ? '[ XX]' : `[L${String(row[2]).padStart(2,'0')}]`;
+          writeTerm(`Row ${i+1}:      ${c1} ${c2}        | AISLE |        ${c3}`);
+        });
+        writeTerm(`\n>>> UPPER DECK (12 Berths - 2x1 Configuration)`);
+        rows.forEach((row, i) => {
+          const c1 = b.booked.includes(`U${row[0]}`) ? '[ XX]' : `[U${String(row[0]).padStart(2,'0')}]`;
+          const c2 = b.booked.includes(`U${row[1]}`) ? '[ XX]' : `[U${String(row[1]).padStart(2,'0')}]`;
+          const c3 = b.booked.includes(`U${row[2]}`) ? '[ XX]' : `[U${String(row[2]).padStart(2,'0')}]`;
+          writeTerm(`Row ${i+1}:      ${c1} ${c2}        | AISLE |        ${c3}`);
+        });
+      }
+
+      writeTerm(`--------------------------------------------------------------------------
+Legend: [01A] / [L01] = Available     [ XX] = Booked
+==========================================================================\n`);
+    }
+
+    function triggerSampleBooking() {
+      writeTerm(`\n--- [4] BOOK TICKETS ---
+Enter Route ID: NR-101
+Enter seat number(s) to book: 2A, 2B
+
+Requested 2 seat(s): [2A, 2B]
+Please enter passenger details for each seat:
+
+--- Passenger 1 (Assigned Seat: 02A) ---
+Full Name: Vikram Rao
+Age (1-120): 34
+Gender (M/F/Other): M
+
+--- Passenger 2 (Assigned Seat: 02B) ---
+Full Name: Ananya Rao
+Age (1-120): 31
+Gender (M/F/Other): F
+
+==========================================================================
+                           NAMMAROUTE TRAVELS                             
+                        OFFICIAL BOOKING RECEIPT                          
+==========================================================================
+PNR Number       : PNR-93041
+Booking Date/Time: 2026-11-24 16:15
+Booking Status   : CONFIRMED
+--------------------------------------------------------------------------
+Bus Route ID     : NR-101
+Journey          : Bengaluru -> Goa
+Departure Time   : 2026-11-27 21:30
+Bus Type         : 2x2 Seater
+Base Ticket Fare : Rs. 1200.00
+--------------------------------------------------------------------------
+PASSENGER DETAILS:
+No.  Seat     Passenger Name             Age    Gender   Fare (INR)   Status
+--------------------------------------------------------------------------
+1    02A      Vikram Rao                 34     M        Rs. 1200.00   CONFIRMED
+2    02B      Ananya Rao                 31     F        Rs. 1200.00   CONFIRMED
+--------------------------------------------------------------------------
+Active Seats Booked : 2
+Total Amount Paid   : Rs. 2400.00
+==========================================================================
+    Thank you for choosing NammaRoute Travels! Have a safe journey!       
+==========================================================================\n`);
+
+      state.buses['NR-101'].booked.push('2A', '2B');
+      state.bookings['PNR-93041'] = {
+        pnr: 'PNR-93041', routeId: 'NR-101', time: '2026-11-24 16:15',
+        passengers: [
+          { name: 'Vikram Rao', age: 34, gender: 'M', seat: '2A', fare: 1200, status: 'CONFIRMED' },
+          { name: 'Ananya Rao', age: 31, gender: 'F', seat: '2B', fare: 1200, status: 'CONFIRMED' }
+        ]
+      };
+    }
+
+    function triggerFailedBooking() {
+      writeTerm(`\n--- [4] BOOK TICKETS ---
+Enter Route ID: NR-101
+Enter seat number(s) to book: 1A, 3A
+
+>> Booking Failed: Seat '01A' is already booked. Please choose an available seat.
+>> No seats were booked. Please try again. (ATOMIC TRANSACTION PRESERVED)\n`);
+    }
+
+    function triggerCancellation() {
+      writeTerm(`\n--- [5] CANCEL TICKETS ---
+Enter PNR Number to cancel: PNR-85021
+Active seats in this booking: [1A, 1B]
+Do you want to cancel the entire booking (ALL) or specific seats?: 1B
+
+==========================================================================
+                           NAMMAROUTE TRAVELS                             
+                      CANCELLATION & REFUND RECEIPT                       
+==========================================================================
+PNR Number          : PNR-85021
+Route ID            : NR-101 (Bengaluru -> Goa)
+Cancelled Seats     : [1B]
+Refund Rate         : 100%
+Total Refund Amount : Rs. 1200.00
+Current Status      : CONFIRMED
+Remaining Seats     : [1A]
+Remaining Fare      : Rs. 1200.00
+==========================================================================
+Seats have been released and are now available for other passengers.
+==========================================================================\n`);
+
+      state.buses['NR-101'].booked = state.buses['NR-101'].booked.filter(s => s !== '1B');
+      state.bookings['PNR-85021'].passengers[1].status = 'CANCELLED';
+    }
+
+    function viewManifest(routeId) {
+      writeTerm(`
+==========================================================================================================
+                                       OFFICIAL PASSENGER MANIFEST                                        
+==========================================================================================================
+Route ID       : NR-101
+Journey        : Bengaluru to Goa
+Departure Time : 2026-11-27 21:30
+Bus Type       : 2x2 Seater (32 Seats)
+Base Ticket Fare: Rs. 1200.00
+----------------------------------------------------------------------------------------------------------
+Seat No.   PNR            Passenger Name                   Age      Gender    
+----------------------------------------------------------------------------------------------------------
+01A        PNR-85021      Rahul Sharma                     28       M         
+02A        PNR-93041      Vikram Rao                       34       M         
+02B        PNR-93041      Ananya Rao                       31       F         
+----------------------------------------------------------------------------------------------------------
+MANIFEST SUMMARY:
+Total Bus Capacity : 32
+Total Booked Seats : 3
+Total Available    : 29
+Total Passengers   : 3
+==========================================================================================================\n`);
+    }
+
+    function searchPnr(pnr) {
+      const b = state.bookings[pnr];
+      if (!b) {
+        writeTerm(`\n>> Error: No booking found with PNR '${pnr}'.\n`);
+        return;
+      }
+      writeTerm(`
+==========================================================================
+                           NAMMAROUTE TRAVELS                             
+                        OFFICIAL BOOKING RECEIPT                          
+==========================================================================
+PNR Number       : ${b.pnr}
+Booking Date/Time: ${b.time}
+Booking Status   : CONFIRMED
+--------------------------------------------------------------------------
+Bus Route ID     : ${b.routeId}
+Journey          : Bengaluru -> Goa
+Departure Time   : 2026-11-27 21:30
+Bus Type         : 2x2 Seater
+Base Ticket Fare : Rs. 1200.00
+--------------------------------------------------------------------------
+PASSENGER DETAILS:
+No.  Seat     Passenger Name             Age    Gender   Fare (INR)   Status
+--------------------------------------------------------------------------`);
+      b.passengers.forEach((p, idx) => {
+        writeTerm(`${idx+1}    ${p.seat.padEnd(8)} ${p.name.padEnd(26)} ${String(p.age).padEnd(6)} ${p.gender.padEnd(8)} Rs. ${p.fare.toFixed(2).padEnd(10)} ${p.status}`);
+      });
+      const active = b.passengers.filter(p => p.status === 'CONFIRMED');
+      const total = active.reduce((acc, cur) => acc + cur.fare, 0);
+      writeTerm(`--------------------------------------------------------------------------
+Active Seats Booked : ${active.length}
+Total Amount Paid   : Rs. ${total.toFixed(2)}
+==========================================================================\n`);
+    }
+
+    function executeCustomBooking() {
+      const routeId = document.getElementById('selRoute').value;
+      const seats = document.getElementById('customSeats').value.split(',').map(s => s.trim().toUpperCase());
+      const n1 = document.getElementById('custName1').value;
+      const n2 = document.getElementById('custName2').value;
+      const b = state.buses[routeId];
+
+      for (const s of seats) {
+        if (b.booked.includes(s)) {
+          writeTerm(`\n>> Booking Failed: Seat '${s}' is already booked on ${routeId}. (Atomic Check Aborted)\n`);
+          return;
+        }
+      }
+
+      seats.forEach(s => b.booked.push(s));
+      const pnr = 'PNR-' + Math.floor(10000 + Math.random() * 90000);
+      writeTerm(`\n>> Custom Reservation Success!
+PNR: ${pnr} | Route: ${routeId} | Seats: ${seats.join(', ')}
+Passengers: ${n1}${seats.length > 1 ? ', ' + n2 : ''}
+Total Paid: Rs. ${(seats.length * b.price).toFixed(2)}\n`);
+    }
+
+    function resetConsole() {
+      term.innerText = '';
+      showBanner();
+    }
+
+    // Initial load
+    showBanner();
+    viewAllBuses();
+  </script>
+</body>
+</html>
