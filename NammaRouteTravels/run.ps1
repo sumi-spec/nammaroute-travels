@@ -1,4 +1,4 @@
-# PowerShell Execution Script for NammaRoute Travels
+# PowerShell Execution Script for NammaRoute Travels (Compatible with PS 5.1 & PS 7+)
 $ErrorActionPreference = "Stop"
 
 Write-Host "=========================================================================" -ForegroundColor Cyan
@@ -6,8 +6,11 @@ Write-Host "Compiling NammaRoute Travels (Java 17 target)..." -ForegroundColor C
 Write-Host "=========================================================================" -ForegroundColor Cyan
 
 # Detect javac and java
-$javac = (Get-Command javac -ErrorAction SilentlyContinue)?.Source
-$java = (Get-Command java -ErrorAction SilentlyContinue)?.Source
+$javacCmd = Get-Command javac -ErrorAction SilentlyContinue
+$javaCmd = Get-Command java -ErrorAction SilentlyContinue
+
+$javac = if ($null -ne $javacCmd) { $javacCmd.Source } else { $null }
+$java = if ($null -ne $javaCmd) { $javaCmd.Source } else { $null }
 
 if (-not $javac) {
     if (Test-Path "C:\Users\Admin\.jdks\openjdk-24.0.2+12-54\bin\javac.exe") {
