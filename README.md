@@ -1,8 +1,20 @@
-# NammaRoute Travels – Bus Booking Management System
+# NammaRoute Travels – Bus Booking Management System (Version 2.0)
 
-A production-grade, menu-driven Core Java 17 console application for managing bus schedules, visual seat allocations, atomic ticket reservations, cancellations with refund processing, passenger manifests, and local CSV persistence.
+A production-grade, menu-driven Core Java 17 console application for managing bus schedules, visual seat allocations, atomic ticket reservations, dynamic surge pricing, female passenger co-seat safety rules, FIFO waitlists with smart auto-promotion, cancellations with refund processing, passenger manifests, and local CSV persistence.
 
 Developed using clean Object-Oriented Programming (OOP) principles, robust defensive input validation, and thread-safe file handling without external framework bloat.
+
+---
+
+## 🚀 Version 2.0 Change Request & Operations Upgrades
+
+In preparation for peak Friday night Bengaluru–Goa schedules, the operations team requested three critical upgrades in Version 2.0, implemented with 100% backward compatibility and verified by **77 automated regression tests**:
+
+| Change | Upgrade Specification | Implementation Details |
+| :--- | :--- | :--- |
+| **Change 1** | **Dynamic Surge Pricing (70% Occupancy Rule)** | When a bus becomes $\ge 70\%$ full, all remaining empty seats automatically cost **20% extra** above base fare. Existing passengers keep their booked rate. If cancellations drop occupancy below 70%, prices revert to normal. Upfront price transparency in seat maps. |
+| **Change 2** | **Female Passenger Co-Seat Safety Rule** | In any 2-seat pair (1A-1B, 1C-1D, or double berths L1-L2), if one seat is booked by a solo female, the adjacent seat can only be booked by another female. Male attempts are blocked with exact error: `"Sorry, seat <X> is reserved for a female co-passenger. Please choose another seat."`<br>**Group Exception:** Husband/wife or family booking both seats together on the same PNR are permitted. |
+| **Change 3** | **FIFO Waitlist & Smart Safety Auto-Promotion** | When a bus is 100% full (0 available seats), allows up to 5 passengers to join a First-In, First-Out (FIFO) Waitlist. Upon seat cancellation, the freed seat is automatically assigned to the first eligible person in queue with a new confirmed PNR.<br>**Smart Safety Check:** If freed seat is next to a female, males are skipped (kept at front of queue) and the next eligible female is promoted. Persisted to `data/waitlist.csv`. |
 
 ---
 

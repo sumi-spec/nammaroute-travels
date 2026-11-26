@@ -1,3 +1,4 @@
 PNR,RouteId,BookingTime,SeatNumber,PassengerName,PassengerAge,PassengerGender,Fare,Status
 PNR-12289,NR-102,2026-11-24 16:03,L1,Amit Patel,30,M,900.00,CONFIRMED
 PNR-12289,NR-102,2026-11-24 16:03,L2,Kavita Patel,28,F,900.00,CANCELLED
+PNR-71944,NR-101,2026-11-25 14:42,1A,Sumit,21,M,1200.00,CONFIRMED

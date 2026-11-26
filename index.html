@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NammaRoute Travels - Bus Booking Management System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
   <style>
     :root {
       --bg: #090d16;
@@ -31,12 +34,20 @@
       --seat-booked-border: #3f3f46;
       --seat-booked-text: #71717a;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
       width: 100%;
       min-height: 100%;
       overflow-x: hidden;
     }
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg);
@@ -44,6 +55,7 @@
       line-height: 1.5;
       padding: clamp(8px, 2vw, 20px);
     }
+
     .container {
       width: 100%;
       max-width: 1280px;
@@ -64,9 +76,11 @@
       gap: 12px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     }
+
     .brand {
       flex: 1 1 280px;
     }
+
     .brand h1 {
       font-size: clamp(1.25rem, 3.5vw, 1.7rem);
       color: var(--text-bright);
@@ -75,22 +89,26 @@
       gap: 8px;
       font-weight: 700;
     }
+
     .brand h1 span {
       background: linear-gradient(90deg, #38bdf8, #818cf8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
     .brand p {
       color: var(--text-muted);
       font-size: clamp(0.78rem, 2vw, 0.88rem);
       margin-top: 3px;
     }
+
     .header-actions {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
+
     .nav-btn {
       background: #1f2937;
       color: var(--text-bright);
@@ -107,6 +125,7 @@
       transition: all 0.2s;
       white-space: nowrap;
     }
+
     .nav-btn:hover {
       background: #374151;
       border-color: var(--accent);
@@ -120,6 +139,7 @@
       border-bottom: 1px solid var(--card-border);
       padding-bottom: 8px;
     }
+
     .tabs-bar {
       display: flex;
       gap: 8px;
@@ -129,13 +149,16 @@
       padding-bottom: 4px;
       -webkit-overflow-scrolling: touch;
     }
+
     .tabs-bar::-webkit-scrollbar {
       height: 4px;
     }
+
     .tabs-bar::-webkit-scrollbar-thumb {
       background: var(--border-light);
       border-radius: 4px;
     }
+
     .tab-btn {
       background: #131b2e;
       color: var(--text-muted);
@@ -152,10 +175,12 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
+
     .tab-btn:hover {
       color: var(--text-bright);
       background: #1f2937;
     }
+
     .tab-btn.active {
       color: #fff;
       background: #1e3a8a;
@@ -163,8 +188,13 @@
     }
 
     /* Main Tab Content */
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
 
     /* Visual Booking Grid (Responsive 2-column to 1-column) */
     .booking-grid {
@@ -173,6 +203,7 @@
       gap: 16px;
       align-items: start;
     }
+
     @media (max-width: 960px) {
       .booking-grid {
         grid-template-columns: 1fr;
@@ -188,6 +219,7 @@
       width: 100%;
       min-width: 0;
     }
+
     .card-title {
       font-size: clamp(1rem, 2.5vw, 1.15rem);
       font-weight: 600;
@@ -215,12 +247,14 @@
       border: 1px solid var(--border-light);
       width: 100%;
     }
+
     .route-bar label {
       font-size: 0.85rem;
       font-weight: 600;
       color: var(--text-muted);
       white-space: nowrap;
     }
+
     .route-bar select {
       flex: 1 1 200px;
       width: 100%;
@@ -229,7 +263,8 @@
       color: #fff;
       padding: 9px 12px;
       border-radius: 6px;
-      font-size: 16px; /* Prevents auto-zoom on mobile iOS */
+      font-size: 16px;
+      /* Prevents auto-zoom on mobile iOS */
       cursor: pointer;
     }
 
@@ -240,6 +275,7 @@
       flex-wrap: wrap;
       margin-bottom: 14px;
     }
+
     .meta-tag {
       background: #1e293b;
       border: 1px solid var(--border-light);
@@ -248,7 +284,10 @@
       font-size: clamp(0.75rem, 1.8vw, 0.82rem);
       color: var(--text);
     }
-    .meta-tag strong { color: var(--accent); }
+
+    .meta-tag strong {
+      color: var(--accent);
+    }
 
     /* Bus Visual Layout (Fluid & Adaptive for All Screen Sizes) */
     .bus-container {
@@ -259,8 +298,9 @@
       width: 100%;
       max-width: 480px;
       margin: 0 auto 16px auto;
-      box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
     }
+
     .bus-front {
       background: #1e293b;
       border-radius: 8px 8px 4px 4px;
@@ -275,6 +315,7 @@
       align-items: center;
       justify-content: space-between;
     }
+
     .deck-title {
       font-size: clamp(0.78rem, 2vw, 0.84rem);
       font-weight: 600;
@@ -294,6 +335,7 @@
       margin-bottom: 8px;
       width: 100%;
     }
+
     .seat-row-label {
       font-size: clamp(0.65rem, 2vw, 0.74rem);
       color: var(--text-muted);
@@ -301,11 +343,13 @@
       font-family: 'Fira Code', monospace;
       flex-shrink: 0;
     }
+
     .seat-group {
       display: flex;
       gap: clamp(4px, 1.2vw, 8px);
       flex-shrink: 0;
     }
+
     .aisle-gap {
       width: clamp(14px, 3vw, 28px);
       text-align: center;
@@ -333,16 +377,19 @@
       border: 1px solid transparent;
       padding: 0;
     }
+
     .seat-btn.available {
       background: var(--seat-avail-bg);
       border-color: var(--seat-avail-border);
       color: var(--seat-avail-text);
     }
+
     .seat-btn.available:hover {
       background: #047857;
       border-color: #34d399;
       transform: translateY(-1px);
     }
+
     .seat-btn.selected {
       background: var(--seat-selected-bg) !important;
       border-color: var(--seat-selected-border) !important;
@@ -350,6 +397,7 @@
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
       transform: scale(1.04);
     }
+
     .seat-btn.booked {
       background: var(--seat-booked-bg);
       border-color: var(--seat-booked-border);
@@ -368,6 +416,7 @@
       border-top: 1px solid var(--border-light);
       flex-wrap: wrap;
     }
+
     .legend-item {
       display: flex;
       align-items: center;
@@ -375,6 +424,7 @@
       font-size: clamp(0.72rem, 1.8vw, 0.8rem);
       color: var(--text-muted);
     }
+
     .legend-box {
       width: 16px;
       height: 15px;
@@ -385,6 +435,7 @@
     .form-group {
       margin-bottom: 12px;
     }
+
     .form-group label {
       display: block;
       font-size: 0.8rem;
@@ -392,6 +443,7 @@
       color: var(--text-muted);
       margin-bottom: 4px;
     }
+
     .form-control {
       width: 100%;
       background: #0f172a;
@@ -399,14 +451,17 @@
       color: #fff;
       padding: 9px 12px;
       border-radius: 6px;
-      font-size: 16px; /* Prevents auto-zoom on mobile */
+      font-size: 16px;
+      /* Prevents auto-zoom on mobile */
       font-family: inherit;
     }
+
     .form-control:focus {
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
     }
+
     .passenger-card {
       background: #0f172a;
       border: 1px solid var(--border-light);
@@ -414,6 +469,7 @@
       padding: 12px;
       margin-bottom: 10px;
     }
+
     .passenger-card-header {
       font-size: 0.82rem;
       font-weight: 600;
@@ -423,6 +479,7 @@
       justify-content: space-between;
       align-items: center;
     }
+
     .primary-btn {
       width: 100%;
       background: #2563eb;
@@ -440,10 +497,12 @@
       transition: all 0.2s;
       margin-top: 12px;
     }
+
     .primary-btn:hover {
       background: #1d4ed8;
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
     }
+
     .danger-btn {
       background: #dc2626;
       color: #fff;
@@ -455,7 +514,10 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    .danger-btn:hover { background: #b91c1c; }
+
+    .danger-btn:hover {
+      background: #b91c1c;
+    }
 
     /* Interactive Terminal Console */
     .terminal-window {
@@ -468,6 +530,7 @@
       height: clamp(380px, 60vh, 600px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
     }
+
     .term-top {
       background: #111827;
       padding: 8px 14px;
@@ -477,16 +540,19 @@
       border-bottom: 1px solid var(--card-border);
       flex-shrink: 0;
     }
+
     .term-controls {
       display: flex;
       align-items: center;
       gap: 6px;
     }
+
     .term-circle {
       width: 10px;
       height: 10px;
       border-radius: 50%;
     }
+
     .term-title {
       font-family: 'Fira Code', monospace;
       font-size: clamp(0.7rem, 2vw, 0.78rem);
@@ -495,6 +561,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
     .term-screen {
       flex: 1;
       padding: 12px 14px;
@@ -507,6 +574,7 @@
       line-height: 1.45;
       -webkit-overflow-scrolling: touch;
     }
+
     .term-input-bar {
       background: #0b1120;
       border-top: 1px solid var(--border-light);
@@ -516,6 +584,7 @@
       gap: 8px;
       flex-shrink: 0;
     }
+
     .term-prompt {
       font-family: 'Fira Code', monospace;
       font-size: clamp(0.78rem, 2vw, 0.88rem);
@@ -523,13 +592,15 @@
       font-weight: 600;
       white-space: nowrap;
     }
+
     .term-input {
       flex: 1;
       background: transparent;
       border: none;
       color: #fff;
       font-family: 'Fira Code', monospace;
-      font-size: 16px; /* Prevents auto-zoom on mobile */
+      font-size: 16px;
+      /* Prevents auto-zoom on mobile */
       outline: none;
       min-width: 80px;
     }
@@ -543,6 +614,7 @@
       margin-bottom: 10px;
       -webkit-overflow-scrolling: touch;
     }
+
     .action-chip {
       background: #1f2937;
       border: 1px solid var(--border-light);
@@ -555,6 +627,7 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
+
     .action-chip:hover {
       background: #374151;
       color: #fff;
@@ -570,18 +643,22 @@
       border-radius: 8px;
       border: 1px solid var(--border-light);
     }
+
     .data-table {
       width: 100%;
       border-collapse: collapse;
       font-size: clamp(0.78rem, 1.8vw, 0.86rem);
       min-width: 620px;
     }
-    .data-table th, .data-table td {
+
+    .data-table th,
+    .data-table td {
       padding: 9px 12px;
       text-align: left;
       border-bottom: 1px solid var(--border-light);
       white-space: nowrap;
     }
+
     .data-table th {
       background: #1e293b;
       color: var(--text-bright);
@@ -589,7 +666,10 @@
       position: sticky;
       top: 0;
     }
-    .data-table tr:hover { background: rgba(255, 255, 255, 0.03); }
+
+    .data-table tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
 
     /* Responsive Receipt Modal */
     .receipt-modal {
@@ -603,6 +683,7 @@
       align-items: center;
       justify-content: center;
     }
+
     .receipt-box {
       background: #111827;
       border: 1px solid var(--card-border);
@@ -615,6 +696,7 @@
       max-height: 92vh;
       overflow-y: auto;
     }
+
     .receipt-content {
       white-space: pre;
       overflow-x: auto;
@@ -625,15 +707,35 @@
 
     /* Small Mobile Tweaks (<= 480px) */
     @media (max-width: 480px) {
-      body { padding: 8px; }
-      .header-actions { width: 100%; justify-content: stretch; }
-      .header-actions .nav-btn { flex: 1; justify-content: center; }
-      .card { padding: 12px; }
-      .bus-container { padding: 10px 6px; }
-      .aisle-gap { width: 12px; }
+      body {
+        padding: 8px;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .header-actions .nav-btn {
+        flex: 1;
+        justify-content: center;
+      }
+
+      .card {
+        padding: 12px;
+      }
+
+      .bus-container {
+        padding: 10px 6px;
+      }
+
+      .aisle-gap {
+        width: 12px;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <!-- Header -->
@@ -680,7 +782,8 @@
         <div class="card">
           <div class="card-title">
             <span>Visual Bus Seat Layout (Click to Select)</span>
-            <span id="routeTypeTag" style="font-size: 0.82rem; font-weight: normal; color: var(--accent);">2x2 Seater</span>
+            <span id="routeTypeTag" style="font-size: 0.82rem; font-weight: normal; color: var(--accent);">2x2
+              Seater</span>
           </div>
 
           <!-- Route Selector -->
@@ -712,15 +815,18 @@
             <!-- Legend -->
             <div class="seat-legend">
               <div class="legend-item">
-                <div class="legend-box" style="background: var(--seat-avail-bg); border: 1px solid var(--seat-avail-border);"></div>
+                <div class="legend-box"
+                  style="background: var(--seat-avail-bg); border: 1px solid var(--seat-avail-border);"></div>
                 <span>Available</span>
               </div>
               <div class="legend-item">
-                <div class="legend-box" style="background: var(--seat-selected-bg); border: 1px solid var(--seat-selected-border);"></div>
+                <div class="legend-box"
+                  style="background: var(--seat-selected-bg); border: 1px solid var(--seat-selected-border);"></div>
                 <span>Selected</span>
               </div>
               <div class="legend-item">
-                <div class="legend-box" style="background: var(--seat-booked-bg); border: 1px solid var(--seat-booked-border);"></div>
+                <div class="legend-box"
+                  style="background: var(--seat-booked-bg); border: 1px solid var(--seat-booked-border);"></div>
                 <span>Booked [XX]</span>
               </div>
             </div>
@@ -731,18 +837,23 @@
         <div class="card">
           <div class="card-title">
             <span>Reservation Details</span>
-            <span id="selectedCountBadge" style="font-size: 0.8rem; background: #1e3a8a; padding: 2px 8px; border-radius: 12px; color: #93c5fd;">0 Seats Selected</span>
+            <span id="selectedCountBadge"
+              style="font-size: 0.8rem; background: #1e3a8a; padding: 2px 8px; border-radius: 12px; color: #93c5fd;">0
+              Seats Selected</span>
           </div>
 
-          <div id="noSeatNotice" style="padding: 24px 0; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+          <div id="noSeatNotice"
+            style="padding: 24px 0; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
             👈 Tap on any available green seat on the bus layout to begin reservation.
           </div>
 
           <div id="bookingFormSection" style="display: none;">
-            <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border-light);">
+            <div
+              style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border-light);">
               <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                 <span style="font-size: 0.82rem; color: var(--text-muted);">Selected Seats:</span>
-                <strong id="displaySelectedSeats" style="font-family: 'Fira Code', monospace; color: var(--accent);">-</strong>
+                <strong id="displaySelectedSeats"
+                  style="font-family: 'Fira Code', monospace; color: var(--accent);">-</strong>
               </div>
               <div style="display: flex; justify-content: space-between;">
                 <span style="font-size: 0.82rem; color: var(--text-muted);">Total Fare:</span>
@@ -789,7 +900,8 @@
         <div class="term-screen" id="consoleScreen"></div>
         <div class="term-input-bar">
           <span class="term-prompt" id="termPromptLabel">Enter choice (1-8):</span>
-          <input type="text" id="terminalInput" class="term-input" autocomplete="off" placeholder="Type here and press Enter..." autofocus>
+          <input type="text" id="terminalInput" class="term-input" autocomplete="off"
+            placeholder="Type here and press Enter..." autofocus>
         </div>
       </div>
     </div>
@@ -835,25 +947,30 @@
           <label>Enter Booking PNR Number</label>
           <div style="display: flex; gap: 8px;">
             <input type="text" id="cancelPnrInput" class="form-control" placeholder="e.g. PNR-85021 or PNR-12289">
-            <button class="nav-btn" style="background: #2563eb; color: #fff; flex-shrink: 0;" onclick="lookupBookingForCancel()">
+            <button class="nav-btn" style="background: #2563eb; color: #fff; flex-shrink: 0;"
+              onclick="lookupBookingForCancel()">
               Lookup
             </button>
           </div>
         </div>
 
-        <div id="cancelDetailsSection" style="display: none; margin-top: 16px; border-top: 1px solid var(--border-light); padding-top: 16px;">
+        <div id="cancelDetailsSection"
+          style="display: none; margin-top: 16px; border-top: 1px solid var(--border-light); padding-top: 16px;">
           <div style="background: #0f172a; border-radius: 8px; padding: 12px; margin-bottom: 14px; font-size: 0.88rem;">
-            <p style="margin-bottom: 4px;"><strong>PNR:</strong> <span id="cancelPnrDisplay" style="color: var(--accent); font-family: 'Fira Code', monospace;"></span></p>
+            <p style="margin-bottom: 4px;"><strong>PNR:</strong> <span id="cancelPnrDisplay"
+                style="color: var(--accent); font-family: 'Fira Code', monospace;"></span></p>
             <p style="margin-bottom: 4px;"><strong>Route:</strong> <span id="cancelRouteDisplay"></span></p>
             <p><strong>Status:</strong> <span id="cancelStatusDisplay"></span></p>
           </div>
 
-          <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem;">Select Seats to Cancel:</label>
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem;">Select Seats to
+            Cancel:</label>
           <div id="cancelSeatsList" style="margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px;">
             <!-- Checkboxes injected -->
           </div>
 
-          <div style="background: #172554; border: 1px solid #1e40af; border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; font-size: 0.82rem;">
+          <div
+            style="background: #172554; border: 1px solid #1e40af; border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; font-size: 0.82rem;">
             ℹ️ Demonstration Refund Policy: <strong>100% full refund</strong> for all cancelled seats.
             Seats will be immediately released back to the visual seat map.
           </div>
@@ -862,7 +979,8 @@
             <button class="danger-btn" style="flex: 1 1 180px;" onclick="executePartialOrFullCancel()">
               Confirm Cancellation & Refund
             </button>
-            <button class="nav-btn" style="flex: 1 1 100px; justify-content: center;" onclick="document.getElementById('cancelDetailsSection').style.display='none'">
+            <button class="nav-btn" style="flex: 1 1 100px; justify-content: center;"
+              onclick="document.getElementById('cancelDetailsSection').style.display='none'">
               Cancel
             </button>
           </div>
@@ -877,7 +995,8 @@
           <span>Official Passenger Manifest Report</span>
           <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
             <label style="font-size: 0.82rem; color: var(--text-muted);">Route:</label>
-            <select id="manifestRouteSelect" onchange="renderManifestTable()" style="background: #0f172a; border: 1px solid var(--border-light); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 16px;">
+            <select id="manifestRouteSelect" onchange="renderManifestTable()"
+              style="background: #0f172a; border: 1px solid var(--border-light); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 16px;">
             </select>
           </div>
         </div>
@@ -901,7 +1020,9 @@
           </table>
         </div>
 
-        <div style="margin-top: 16px; padding: 12px; background: #0f172a; border-radius: 8px; display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.85rem;" id="manifestSummaryBar">
+        <div
+          style="margin-top: 16px; padding: 12px; background: #0f172a; border-radius: 8px; display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.85rem;"
+          id="manifestSummaryBar">
           <!-- Summary stats -->
         </div>
       </div>
@@ -912,9 +1033,11 @@
   <!-- RECEIPT MODAL -->
   <div class="receipt-modal" id="receiptModal" onclick="closeReceiptModal(event)">
     <div class="receipt-box" onclick="event.stopPropagation()">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 10px; margin-bottom: 12px;">
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 10px; margin-bottom: 12px;">
         <span style="font-weight: 700; color: var(--accent); font-size: 0.95rem;">✅ OFFICIAL BOOKING RECEIPT</span>
-        <button onclick="closeReceiptModal()" style="background: transparent; border: none; color: #9ca3af; font-size: 1.3rem; cursor: pointer; padding: 4px 8px;">✕</button>
+        <button onclick="closeReceiptModal()"
+          style="background: transparent; border: none; color: #9ca3af; font-size: 1.3rem; cursor: pointer; padding: 4px 8px;">✕</button>
       </div>
       <div id="receiptModalBody" class="receipt-content"></div>
       <button class="primary-btn" onclick="closeReceiptModal()" style="margin-top: 14px;">
@@ -925,7 +1048,7 @@
 
   <!-- JAVASCRIPT STATE ENGINE & CONTROLLER -->
   <script>
-    const STORAGE_KEY = 'nammaroute_travels_state_v1';
+    const STORAGE_KEY = 'nammaroute_travels_state_v2';
 
     function getInitialState() {
       return {
@@ -960,8 +1083,131 @@
               { name: 'Amit Patel', age: 30, gender: 'M', seat: 'L1', fare: 900, status: 'CONFIRMED' }
             ]
           }
-        }
+        },
+        waitlists: {}
       };
+    }
+
+    // --- VERSION 2.0 HELPER FUNCTIONS ---
+    function isSurgeActive(bus) {
+      if (!bus || bus.total === 0) return false;
+      return (bus.booked.length / bus.total) >= 0.70;
+    }
+
+    function getCurrentSeatPrice(bus) {
+      if (!bus) return 0;
+      return isSurgeActive(bus) ? Math.round(bus.price * 1.20) : bus.price;
+    }
+
+    function getAdjacentSeat(type, seat) {
+      if (!seat) return null;
+      const s = seat.toUpperCase().trim();
+      if (type === 'SEATER') {
+        const m = s.match(/^0*([1-8])([A-D])$/);
+        if (m) {
+          const row = m[1];
+          const col = m[2];
+          if (col === 'A') return row + 'B';
+          if (col === 'B') return row + 'A';
+          if (col === 'C') return row + 'D';
+          if (col === 'D') return row + 'C';
+        }
+      } else if (type === 'SLEEPER') {
+        const m = s.match(/^([LU])0*([1-9]|1[0-2])$/);
+        if (m) {
+          const deck = m[1];
+          const num = parseInt(m[2]);
+          const mod = num % 3;
+          if (mod === 1) return deck + (num + 1);
+          if (mod === 2) return deck + (num - 1);
+          return null; // Single berth (L3, L6, L9, L12)
+        }
+      }
+      return null;
+    }
+
+    function validateFemaleCoSeatRule(bus, newPassengers) {
+      const batchSeats = {};
+      newPassengers.forEach(p => batchSeats[p.seat.toUpperCase()] = p);
+
+      for (const p of newPassengers) {
+        const adj = getAdjacentSeat(bus.type, p.seat);
+        if (!adj) continue;
+
+        // Group / family booking exception
+        if (batchSeats[adj]) continue;
+
+        // Check if adjacent seat is booked
+        if (bus.booked.includes(adj)) {
+          let neighbor = null;
+          for (const pnr in appState.bookings) {
+            const b = appState.bookings[pnr];
+            if (b.routeId === bus.routeId && b.status !== 'CANCELLED') {
+              const found = b.passengers.find(x => x.seat === adj && x.status === 'CONFIRMED');
+              if (found) { neighbor = found; break; }
+            }
+          }
+
+          if (neighbor && neighbor.gender === 'F' && p.gender !== 'F') {
+            return `Sorry, seat ${p.seat} is reserved for a female co-passenger. Please choose another seat.`;
+          }
+        }
+      }
+      return null;
+    }
+
+    function checkWaitlistAutoPromotion(bus, freedSeat) {
+      if (!appState.waitlists) appState.waitlists = {};
+      const queue = appState.waitlists[bus.routeId] || [];
+      if (queue.length === 0) return null;
+
+      for (let i = 0; i < queue.length; i++) {
+        const candidate = queue[i];
+        const adj = getAdjacentSeat(bus.type, freedSeat);
+        let safe = true;
+
+        if (adj && bus.booked.includes(adj)) {
+          let neighbor = null;
+          for (const pnr in appState.bookings) {
+            const b = appState.bookings[pnr];
+            if (b.routeId === bus.routeId && b.status !== 'CANCELLED') {
+              const f = b.passengers.find(x => x.seat === adj && x.status === 'CONFIRMED');
+              if (f) { neighbor = f; break; }
+            }
+          }
+          if (neighbor && neighbor.gender === 'F' && candidate.gender !== 'F') {
+            safe = false; // Skip male candidate for seat next to female
+          }
+        }
+
+        if (safe) {
+          queue.splice(i, 1);
+          bus.booked.push(freedSeat);
+
+          const pnr = generatePnr();
+          const fare = getCurrentSeatPrice(bus);
+          const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+
+          appState.bookings[pnr] = {
+            pnr: pnr,
+            routeId: bus.routeId,
+            time: nowStr,
+            passengers: [{
+              name: candidate.name,
+              age: candidate.age,
+              gender: candidate.gender,
+              seat: freedSeat,
+              fare: fare,
+              status: 'CONFIRMED'
+            }]
+          };
+
+          saveState();
+          alert(`[⚡ AUTO-PROMOTION ALERT]\nWaitlist passenger ${candidate.name} (${candidate.gender}) has been automatically promoted to Seat ${freedSeat} on Route ${bus.routeId}!\nNew Confirmed PNR: ${pnr}`);
+          return candidate;
+        }
+      }
+      return null;
     }
 
     let appState = loadState();
@@ -1044,9 +1290,14 @@
       const bus = appState.buses[routeId];
       if (!bus) return;
 
+      const surge = isSurgeActive(bus);
+      const currPrice = getCurrentSeatPrice(bus);
+
       document.getElementById('metaJourney').innerText = `${bus.origin} ➔ ${bus.destination}`;
       document.getElementById('metaDep').innerText = bus.dep;
-      document.getElementById('metaFare').innerText = `₹${bus.price.toFixed(2)}`;
+      document.getElementById('metaFare').innerHTML = surge
+        ? `₹${currPrice} <span style="font-size:0.75rem; background:#f59e0b; color:#000; padding:1px 6px; border-radius:4px; font-weight:bold;">⚡20% Surge</span>`
+        : `₹${currPrice}`;
       document.getElementById('routeTypeTag').innerText = bus.type === 'SEATER' ? '2x2 Seater (32 Seats)' : '2x1 Sleeper (24 Berths)';
 
       const avail = bus.total - bus.booked.length;
@@ -1102,7 +1353,7 @@
       lowerHeader.innerText = '🔻 Lower Deck (12 Berths)';
       container.appendChild(lowerHeader);
 
-      const rows = [[1,2,3], [4,5,6], [7,8,9], [10,11,12]];
+      const rows = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]];
       rows.forEach((r, idx) => {
         container.appendChild(createSleeperRow(bus, 'L', idx + 1, r[0], r[1], r[2]));
       });
@@ -1201,8 +1452,9 @@
       formSection.style.display = 'block';
 
       displaySeats.innerText = selectedSeats.join(', ');
-      const totalFare = selectedSeats.length * bus.price;
-      displayFare.innerText = `₹${totalFare.toFixed(2)}`;
+      const seatPrice = getCurrentSeatPrice(bus);
+      const totalFare = selectedSeats.length * seatPrice;
+      displayFare.innerText = `₹${totalFare.toFixed(2)}${isSurgeActive(bus) ? ' (⚡ 20% Surge)' : ''}`;
 
       const existingValues = {};
       container.querySelectorAll('.passenger-card').forEach(card => {
@@ -1225,7 +1477,7 @@
         card.innerHTML = `
           <div class="passenger-card-header">
             <span>Pass. ${idx + 1} (Seat: <strong>${seat}</strong>)</span>
-            <span>₹${bus.price}</span>
+            <span>₹${seatPrice}${isSurgeActive(bus) ? ' <small style="color:var(--accent-yellow);">⚡Surge</small>' : ''}</span>
           </div>
           <div class="form-group">
             <label>Full Name *</label>
@@ -1264,6 +1516,7 @@
       }
 
       const passengers = [];
+      const seatPrice = getCurrentSeatPrice(bus);
       const cards = document.querySelectorAll('#passengerFormsContainer .passenger-card');
       for (let i = 0; i < cards.length; i++) {
         const card = cards[i];
@@ -1286,9 +1539,16 @@
           age: age,
           gender: gender,
           seat: seat,
-          fare: bus.price,
+          fare: seatPrice,
           status: 'CONFIRMED'
         });
+      }
+
+      // Version 2.0 Change 2: Female Co-Seat Safety Rule Validation
+      const safetyError = validateFemaleCoSeatRule(bus, passengers);
+      if (safetyError) {
+        alert(safetyError);
+        return;
       }
 
       selectedSeats.forEach(s => bus.booked.push(s));
@@ -1304,7 +1564,7 @@
 
       saveState();
       showReceipt(pnr);
-      termPrint(`\n[WEB BOOKING SUCCESS] ${pnr} booked on ${routeId} for seats [${selectedSeats.join(', ')}]. Total: ₹${passengers.length * bus.price}\n`);
+      termPrint(`\n[WEB BOOKING SUCCESS] ${pnr} booked on ${routeId} for seats [${selectedSeats.join(', ')}]. Total: ₹${passengers.length * seatPrice}\n`);
 
       selectedSeats = [];
       renderVisualSeatMap();
@@ -1519,6 +1779,8 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
         }
         if (bus) {
           bus.booked = bus.booked.filter(s => s !== seatNum);
+          // Version 2.0 Change 3: Auto-promote from FIFO Waitlist
+          checkWaitlistAutoPromotion(bus, seatNum);
         }
       });
 
@@ -2024,19 +2286,19 @@ Capacity    : Total: ${bus.total}  |  Booked: ${bookedCount}  |  Available: ${av
         }
       } else {
         termPrint(`>>> LOWER DECK (12 Berths - 2x1 Configuration)`);
-        const rows = [[1,2,3], [4,5,6], [7,8,9], [10,11,12]];
+        const rows = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]];
         rows.forEach((row, i) => {
-          const c1 = bus.booked.includes(`L${row[0]}`) ? '[ XX]' : `[L${String(row[0]).padStart(2,'0')}]`;
-          const c2 = bus.booked.includes(`L${row[1]}`) ? '[ XX]' : `[L${String(row[1]).padStart(2,'0')}]`;
-          const c3 = bus.booked.includes(`L${row[2]}`) ? '[ XX]' : `[L${String(row[2]).padStart(2,'0')}]`;
-          termPrint(`Row ${i+1}:      ${c1} ${c2}        | AISLE |        ${c3}`);
+          const c1 = bus.booked.includes(`L${row[0]}`) ? '[ XX]' : `[L${String(row[0]).padStart(2, '0')}]`;
+          const c2 = bus.booked.includes(`L${row[1]}`) ? '[ XX]' : `[L${String(row[1]).padStart(2, '0')}]`;
+          const c3 = bus.booked.includes(`L${row[2]}`) ? '[ XX]' : `[L${String(row[2]).padStart(2, '0')}]`;
+          termPrint(`Row ${i + 1}:      ${c1} ${c2}        | AISLE |        ${c3}`);
         });
         termPrint(`\n>>> UPPER DECK (12 Berths - 2x1 Configuration)`);
         rows.forEach((row, i) => {
-          const c1 = bus.booked.includes(`U${row[0]}`) ? '[ XX]' : `[U${String(row[0]).padStart(2,'0')}]`;
-          const c2 = bus.booked.includes(`U${row[1]}`) ? '[ XX]' : `[U${String(row[1]).padStart(2,'0')}]`;
-          const c3 = bus.booked.includes(`U${row[2]}`) ? '[ XX]' : `[U${String(row[2]).padStart(2,'0')}]`;
-          termPrint(`Row ${i+1}:      ${c1} ${c2}        | AISLE |        ${c3}`);
+          const c1 = bus.booked.includes(`U${row[0]}`) ? '[ XX]' : `[U${String(row[0]).padStart(2, '0')}]`;
+          const c2 = bus.booked.includes(`U${row[1]}`) ? '[ XX]' : `[U${String(row[1]).padStart(2, '0')}]`;
+          const c3 = bus.booked.includes(`U${row[2]}`) ? '[ XX]' : `[U${String(row[2]).padStart(2, '0')}]`;
+          termPrint(`Row ${i + 1}:      ${c1} ${c2}        | AISLE |        ${c3}`);
         });
       }
 
@@ -2134,7 +2396,7 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
 ==========================================================================\n`);
     }
 
-    termInput.addEventListener('keydown', function(e) {
+    termInput.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
         processTerminalInput();
       }
@@ -2151,4 +2413,5 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
     initUI();
   </script>
 </body>
+
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NammaRoute Travels - 5-Minute Demo Presentation</title>
+  <title>NammaRoute Travels - Version 2.0 Upgrade Demo Presentation</title>
   <style>
     :root {
       --bg: #090d16;
@@ -288,7 +288,7 @@
       border-color: rgba(16, 185, 129, 0.25);
     }
 
-    /* Code & Terminal Snippet Box */
+    /* Code & Snippet Box */
     .code-box {
       background: #090d16;
       border: 1px solid var(--card-border);
@@ -462,9 +462,9 @@
   <!-- Top Header Navigation -->
   <header>
     <div class="brand">
-      <span class="brand-badge">5-Min Demo</span>
+      <span class="brand-badge">Version 2.0</span>
       <span>NammaRoute Travels</span>
-      <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 400;">| Bus Booking Management System</span>
+      <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 400;">| Client Update & Upgrade Specifications</span>
     </div>
 
     <div class="controls">
@@ -484,301 +484,290 @@
   <main class="deck-container">
 
     <!-- ========================================== -->
-    <!-- SLIDE 1: Title & Overview -->
+    <!-- SLIDE 1: Version 2.0 Overview -->
     <!-- ========================================== -->
     <section class="slide active" id="slide-1">
       <div class="slide-meta">
-        <span class="slide-category">01 / Project Overview</span>
+        <span class="slide-category">01 / V2.0 Change Request Overview</span>
         <span class="slide-timing">⏱ 0:00 - 0:45 (45s)</span>
       </div>
-      <h1 class="slide-title">NammaRoute Travels</h1>
-      <p class="slide-subtitle">Enterprise Bus Booking & Fleet Management Console Engine in Core Java 17</p>
+      <h1 class="slide-title">NammaRoute Travels 2.0</h1>
+      <p class="slide-subtitle">Intercity Bus Reservation System • Client Upgrade for High-Demand Friday Routes</p>
 
       <div class="grid-2">
         <div class="feature-card">
-          <div class="card-title"><span>🎯</span> The Real-World Problem</div>
+          <div class="card-title"><span>🎯</span> Operations Team Motivation</div>
           <p class="card-desc">
-            Manual booking systems suffer from critical flaws: double-booking race conditions, lack of dynamic coach visibility, messy paper manifests, and catastrophic data loss during system interruptions.
+            Following successful Version 1.0 evaluations, the operations team requested three high-impact commercial upgrades for peak Friday night Bengaluru–Goa schedules:
           </p>
-          <div class="card-title" style="margin-top: 10px;"><span>💡</span> The NammaRoute Solution</div>
-          <p class="card-desc">
-            A zero-dependency, menu-driven reservation engine providing instant visual coach layouts, atomic multi-seat transactions, real-time boarding manifests, and local CSV persistence across restarts.
-          </p>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.88rem; color: #cbd5e1; margin-top: 6px;">
+            <li><strong style="color: var(--accent);">⚡ Change 1:</strong> Dynamic Surge Pricing (70% Occupancy Rule & +20% Price)</li>
+            <li><strong style="color: var(--accent);">🛡️ Change 2:</strong> Female Passenger Co-Seat Safety Rule with Group Exception</li>
+            <li><strong style="color: var(--accent);">👥 Change 3:</strong> FIFO Waitlist (Max 5) with Smart Safety Auto-Promotion</li>
+          </ul>
           <div class="badge-list">
-            <span class="badge badge-amber">Core Java 17</span>
-            <span class="badge badge-green">Pure OOP</span>
-            <span class="badge">Zero Frameworks</span>
-            <span class="badge">CSV Local Storage</span>
+            <span class="badge badge-amber">100% Backward Compatible</span>
+            <span class="badge badge-green">Zero Frameworks</span>
+            <span class="badge">Pure Core Java 17</span>
           </div>
         </div>
 
         <div class="feature-card">
-          <div class="card-title"><span>🚀</span> Key Demonstration Deliverables</div>
-          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 4px;">
-            <li style="display: flex; gap: 8px; font-size: 0.9rem; color: #cbd5e1;">
-              <strong style="color: var(--accent);">1.</strong> Dynamic 2x2 Seater & 2x1 Sleeper Visual Coach Maps
-            </li>
-            <li style="display: flex; gap: 8px; font-size: 0.9rem; color: #cbd5e1;">
-              <strong style="color: var(--accent);">2.</strong> Atomic Multi-Seat Booking with Collision Prevention
-            </li>
-            <li style="display: flex; gap: 8px; font-size: 0.9rem; color: #cbd5e1;">
-              <strong style="color: var(--accent);">3.</strong> Unique PNR-XXXXX Generation & Itemized Receipts
-            </li>
-            <li style="display: flex; gap: 8px; font-size: 0.9rem; color: #cbd5e1;">
-              <strong style="color: var(--accent);">4.</strong> Full & Partial Cancellations with Immediate Seat Release
-            </li>
-            <li style="display: flex; gap: 8px; font-size: 0.9rem; color: #cbd5e1;">
-              <strong style="color: var(--accent);">5.</strong> Real-Time Boarding Manifest Sorted by Seat Number
-            </li>
-            <li style="display: flex; gap: 8px; font-size: 0.9rem; color: #cbd5e1;">
-              <strong style="color: var(--accent);">6.</strong> Full Data Persistence Across Application Restarts
-            </li>
-          </ul>
+          <div class="card-title"><span>📊</span> Evaluation & Verification Metrics</div>
+          <div style="font-size: 0.88rem; display: flex; flex-direction: column; gap: 10px; color: #cbd5e1;">
+            <div>
+              <strong style="color: var(--primary);">✓ Backward Compatibility:</strong><br>
+              All 11 Version 1.0 scenarios (seat maps, atomic bookings, cancellations, manifests, restart persistence) remain 100% functional.
+            </div>
+            <div>
+              <strong style="color: var(--primary);">✓ Clean Code Architecture:</strong><br>
+              Dedicated service abstractions (<code>CoSeatSafetyService</code>, <code>WaitlistService</code>) keep <code>Main.java</code> clean and maintainable.
+            </div>
+            <div>
+              <strong style="color: var(--primary);">✓ Test Coverage:</strong><br>
+              <strong>77 / 77 Automated Tests Passing</strong> covering all edge cases, race conditions, and disk persistence.
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ========================================== -->
-    <!-- SLIDE 2: Architecture & OOP Principles -->
+    <!-- SLIDE 2: Architecture & Clean Code -->
     <!-- ========================================== -->
     <section class="slide" id="slide-2">
       <div class="slide-meta">
-        <span class="slide-category">02 / System Architecture</span>
+        <span class="slide-category">02 / Architecture & Clean Code</span>
         <span class="slide-timing">⏱ 0:45 - 1:30 (45s)</span>
       </div>
-      <h1 class="slide-title">Layered OOP Architecture</h1>
-      <p class="slide-subtitle">Clean Separation of Concerns with Strong Encapsulation</p>
+      <h1 class="slide-title">Modular Architectural Evolution</h1>
+      <p class="slide-subtitle">Upgraded cleanly with dedicated domain services rather than monolithic code</p>
 
       <div class="grid-3">
         <div class="feature-card">
-          <div class="card-title"><span>📦</span> Presentation & Validator</div>
+          <div class="card-title"><span>⚡</span> Bus.java (Surge Engine)</div>
           <p class="card-desc">
-            <strong>Main.java</strong> handles the menu loop and user interaction.<br><br>
-            <strong>InputValidator.java</strong> guards the boundary: validates positive ages, non-empty names, gender options, route formats, and prevents shell crashes.
+            Occupancy tracking via <code>getOccupancyRate()</code>.<br><br>
+            Surge condition threshold: <code>occupancy &gt;= 0.70</code>.<br><br>
+            Auto-calculates standard base fare or 20% surge rate dynamically.
           </p>
           <div class="badge-list">
-            <span class="badge">Input Sanitization</span>
-            <span class="badge badge-amber">Crash-Proof</span>
+            <span class="badge badge-amber">Dynamic Pricing</span>
           </div>
         </div>
 
         <div class="feature-card">
-          <div class="card-title"><span>⚙️</span> Service / Business Logic</div>
+          <div class="card-title"><span>🛡️</span> CoSeatSafetyService.java</div>
           <p class="card-desc">
-            <strong>BusService:</strong> Fleet registry and route discovery.<br>
-            <strong>BookingService:</strong> Atomic seat locks, PNR generation, cancellation & refund calculation.<br>
-            <strong>ManifestService:</strong> Boarding charts sorted via Java Collections.
+            Geometrical seat pair resolver for 2x2 Seater (A-B, C-D) & 2x1 Sleeper (L1-L2, U1-U2).<br><br>
+            Guards female co-seats, blocks solo males, and enforces group booking exceptions on same PNR.
           </p>
           <div class="badge-list">
-            <span class="badge badge-green">Atomic Booking</span>
-            <span class="badge">Refund Logic</span>
+            <span class="badge badge-green">Safety Rules</span>
           </div>
         </div>
 
         <div class="feature-card">
-          <div class="card-title"><span>💾</span> Model & Persistence</div>
+          <div class="card-title"><span>👥</span> WaitlistService.java</div>
           <p class="card-desc">
-            <strong>Domain Models:</strong> Bus, Seat, Passenger, Booking with private state.<br><br>
-            <strong>FileStorageService:</strong> Zero-dependency CSV serialization engine. Automatically reads and flushes data to <code>data/</code> folder.
+            FIFO queue capped at 5 entries.<br><br>
+            Smart Safety Auto-Promotion: skips male candidates if freed seat is next to a female, promoting next eligible female.
           </p>
           <div class="badge-list">
-            <span class="badge">Encapsulation</span>
+            <span class="badge">FIFO Queue</span>
             <span class="badge badge-amber">CSV Storage</span>
           </div>
         </div>
       </div>
 
-      <div class="code-box" style="margin-top: 16px;">
-        <span class="code-highlight">// Clean OOP Encapsulation: State changes guarded by domain methods</span><br>
-        Seat seat = bus.getSeat("1A");<br>
-        if (seat.isAvailable()) { seat.book(); } <span style="color: #64748b;">// Mutation strictly controlled inside domain model</span>
+      <div class="code-box" style="margin-top: 14px;">
+        <span class="code-highlight">// High-Cohesion Separation of Concerns</span><br>
+        String safetyError = CoSeatSafetyService.validateFemaleCoSeatRule(bus, passengerList, bookingService);<br>
+        WaitlistEntry promoted = waitlistService.promoteNextEligiblePassenger(bus, freedSeat, bookingService);
       </div>
     </section>
 
     <!-- ========================================== -->
-    <!-- SLIDE 3: Visual Coach & Atomic Bookings -->
+    <!-- SLIDE 3: Change 1 - Dynamic Surge Pricing -->
     <!-- ========================================== -->
     <section class="slide" id="slide-3">
       <div class="slide-meta">
-        <span class="slide-category">03 / Engineering Highlights</span>
-        <span class="slide-timing">⏱ 1:30 - 2:20 (50s)</span>
+        <span class="slide-category">03 / Change 1: Dynamic Surge Pricing</span>
+        <span class="slide-timing">⏱ 1:30 - 2:15 (45s)</span>
       </div>
-      <h1 class="slide-title">Visual Coach & Atomic Logic</h1>
-      <p class="slide-subtitle">Real-time ASCII terminal rendering and 100% atomic transaction safety</p>
+      <h1 class="slide-title">Dynamic Surge: 70% Occupancy Rule</h1>
+      <p class="slide-subtitle">Maximizing fleet revenue while preserving customer price fairness</p>
 
       <div class="grid-2">
         <div class="feature-card">
-          <div class="card-title"><span>🚌</span> Dynamic Visual Seat Maps</div>
+          <div class="card-title"><span>📈</span> The Business Rule</div>
           <p class="card-desc">
-            The system inspects bus specifications and dynamically formats the physical coach layout in the console:
+            When a bus becomes <strong>70% or more full</strong>, all remaining empty seats automatically cost <strong>20% extra</strong> above base fare.
           </p>
           <div class="code-box" style="font-size: 0.8rem; padding: 10px;">
-            SEATER (32 Seats - 2x2):<br>
-            Row 1: [01A] [01B] &nbsp;|&nbsp; [01C] [01D]<br>
-            Row 2: [<span style="color:var(--danger);"> XX </span>] [02B] &nbsp;|&nbsp; [02C] [02D]<br><br>
-            SLEEPER (24 Berths - Lower/Upper):<br>
-            Lower: [L01] [L02] &nbsp;|&nbsp; [L03]<br>
-            Upper: [U01] [<span style="color:var(--danger);"> XX </span>] &nbsp;|&nbsp; [U03]
+            Example (24-Berth Sleeper @ Rs. 900 Base Fare):<br>
+            • Berths 1 to 16 (66.7%): Standard Fare = Rs. 900.00<br>
+            • Berth 17+ (&gt;= 70.0%): Surge Rate (+20%) = Rs. 1080.00<br>
+            • Total Fare = Math.round(basePrice * 1.20)
           </div>
           <div class="badge-list">
-            <span class="badge badge-green">[01A] = Available</span>
-            <span class="badge" style="color: var(--danger); border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.1);">[ XX ] = Booked</span>
+            <span class="badge badge-green">&gt;= 70% Occupancy</span>
+            <span class="badge badge-amber">+20% Surge Fare</span>
           </div>
         </div>
 
         <div class="feature-card">
-          <div class="card-title"><span>🔒</span> Atomic Multi-Seat Validation</div>
+          <div class="card-title"><span>⚖️</span> Integrity & Fairness Safeguards</div>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem; color: #cbd5e1;">
+            <li>
+              <strong style="color: var(--accent);">1. Price Lock Guarantee:</strong> Passengers who booked prior to the 70% surge keep their original price.
+            </li>
+            <li>
+              <strong style="color: var(--accent);">2. Dynamic Deactivation:</strong> If a ticket is cancelled and occupancy drops below 70%, new bookings immediately revert to the normal price.
+            </li>
+            <li>
+              <strong style="color: var(--accent);">3. Upfront Transparency:</strong> Surge status and calculated prices are clearly displayed in seat maps and booking prompts before confirmation.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SLIDE 4: Change 2 - Female Co-Seat Rule -->
+    <!-- ========================================== -->
+    <section class="slide" id="slide-4">
+      <div class="slide-meta">
+        <span class="slide-category">04 / Change 2: Female Co-Seat Safety</span>
+        <span class="slide-timing">⏱ 2:15 - 3:00 (45s)</span>
+      </div>
+      <h1 class="slide-title">Female Co-Seat Safety Protection</h1>
+      <p class="slide-subtitle">Industry-standard safety mechanics with smart group/family exceptions</p>
+
+      <div class="grid-2">
+        <div class="feature-card">
+          <div class="card-title"><span>🛡️</span> The Safety Mechanism</div>
           <p class="card-desc">
-            <strong>The Problem:</strong> When booking seats [1A, 1B, 1C], if seat 1C is already taken, naive systems book 1A & 1B and fail on 1C, leaving partial corrupted state.
+            In a 2-seat pair (e.g. 1A-1B, 1C-1D, or double sleeper berths L1-L2):
+          </p>
+          <ul style="font-size: 0.85rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 6px; padding-left: 18px;">
+            <li>If one seat is booked by a <strong>Female</strong> passenger, the adjacent seat can <strong>only</strong> be booked by another Female passenger.</li>
+            <li>If a Male tries to book, the booking is rejected with exact client message:</li>
+          </ul>
+          <div class="code-box" style="font-size: 0.8rem; color: var(--danger); border-color: rgba(239,68,68,0.4);">
+            "Sorry, seat 1B is reserved for a female co-passenger. Please choose another seat."
+          </div>
+          <div class="badge-list">
+            <span class="badge" style="color: var(--danger);">Blocked for Solo Males</span>
+            <span class="badge badge-green">Allowed for Females</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-title"><span>👨‍👩‍👦</span> Group / Family Booking Exception</div>
+          <p class="card-desc">
+            <strong>The Exception Rule:</strong> If two passengers book both adjacent seats together on the same PNR (e.g. husband and wife booking 1A and 1B in a single transaction), the booking is <strong>permitted</strong>!
           </p>
           <p class="card-desc" style="color: #38bdf8;">
-            <strong>Our Solution: Two-Phase Commit Check:</strong><br>
-            1. Validate all requested seat labels exist.<br>
-            2. Validate no duplicate labels entered.<br>
-            3. Verify <em>every</em> seat is currently available.<br>
-            4. Only if <strong>100%</strong> pass, lock seats and create booking.
+            <strong>Implementation:</strong> The validator inspects the current batch request. If the adjacent seat is part of the same transaction, the restriction is bypassed.
           </p>
           <div class="badge-list">
-            <span class="badge badge-amber">No Dirty Reads</span>
-            <span class="badge badge-green">Zero Double-Booking</span>
+            <span class="badge badge-amber">Single Transaction Safe</span>
+            <span class="badge badge-green">Family Friendly</span>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ========================================== -->
-    <!-- SLIDE 4: Live Demo Execution Flow -->
+    <!-- SLIDE 5: Change 3 - FIFO Waitlist & Promotion -->
     <!-- ========================================== -->
-    <section class="slide" id="slide-4">
+    <section class="slide" id="slide-5">
       <div class="slide-meta">
-        <span class="slide-category">04 / Live Demo Flow</span>
-        <span class="slide-timing">⏱ 2:20 - 3:50 (90s)</span>
+        <span class="slide-category">05 / Change 3: FIFO Waitlist & Auto-Promotion</span>
+        <span class="slide-timing">⏱ 3:00 - 3:50 (50s)</span>
       </div>
-      <h1 class="slide-title">5-Minute Live Demo Script</h1>
-      <p class="slide-subtitle">Step-by-step demonstration path to showcase every requirement</p>
+      <h1 class="slide-title">FIFO Waitlist & Smart Auto-Promotion</h1>
+      <p class="slide-subtitle">Automated seat recovery with gender-safety compliance and CSV persistence</p>
+
+      <div class="grid-2">
+        <div class="feature-card">
+          <div class="card-title"><span>👥</span> FIFO Queue (Max 5 Capacity)</div>
+          <p class="card-desc">
+            When a bus reaches <strong>100% capacity</strong> (0 empty seats), passengers can join a First-In, First-Out Waitlist up to 5 entries.
+          </p>
+          <ul style="font-size: 0.85rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 6px; padding-left: 18px;">
+            <li>Issues official Waitlist Tickets with unique ID (e.g. <code>WL-NR-103-01</code>).</li>
+            <li>Enforces maximum capacity limit of 5 entries per route.</li>
+            <li>Persisted to <code>data/waitlist.csv</code> across restarts.</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-title"><span>🧠</span> Smart Safety Auto-Promotion</div>
+          <p class="card-desc">
+            When any confirmed passenger cancels their seat, the system scans the waitlist:
+          </p>
+          <div class="code-box" style="font-size: 0.78rem;">
+            Scenario: Freed seat is 1B (adjacent to Female in 1A).<br>
+            • Person #1 in Queue: Dev (Male) ➔ <span style="color:var(--accent);">SKIPPED (Kept at #1)</span><br>
+            • Person #2 in Queue: Sneha (Female) ➔ <span style="color:var(--success);">AUTO-PROMOTED!</span><br>
+            • Generates new confirmed PNR & removes Sneha from queue.
+          </div>
+          <div class="badge-list">
+            <span class="badge badge-green">Auto PNR Generation</span>
+            <span class="badge badge-amber">Smart Female Check</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SLIDE 6: Live Demo & Defense -->
+    <!-- ========================================== -->
+    <section class="slide" id="slide-6">
+      <div class="slide-meta">
+        <span class="slide-category">06 / Live Demo Script & Evaluation</span>
+        <span class="slide-timing">⏱ 3:50 - 5:00 (70s)</span>
+      </div>
+      <h1 class="slide-title">Live Demonstration & Evaluation</h1>
+      <p class="slide-subtitle">Step-by-step presentation path to showcase all 3 client upgrades live</p>
 
       <table class="demo-table">
         <thead>
           <tr>
-            <th style="width: 80px;">Action</th>
-            <th style="width: 220px;">Input / Command</th>
-            <th>What to Highlight to Examiners / Audience</th>
+            <th style="width: 70px;">Step</th>
+            <th style="width: 220px;">Live Action</th>
+            <th>What Examiners Witness</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><span class="step-num">1</span> <strong>View Map</strong></td>
-            <td>Menu <code>3</code> &rarr; Route: <code>NR-101</code></td>
-            <td>Dynamic 2x2 coach layout with 32 seats. Point out all seats in <code>[01A]</code> format.</td>
+            <td><span class="step-num">1</span></td>
+            <td><strong>Surge Pricing Trigger</strong></td>
+            <td>Book seats until occupancy &gt;= 70%. Show price jump from Rs. 900 to Rs. 1080 (+20%). Cancel 1 seat to show price drop back to Rs. 900.</td>
           </tr>
           <tr>
-            <td><span class="step-num">2</span> <strong>Book Seats</strong></td>
-            <td>Menu <code>4</code> &rarr; <code>NR-101</code> &rarr; <code>1A, 1B</code></td>
-            <td>Atomic reservation, enter passenger names, instant receipt with unique <code>PNR-XXXXX</code>.</td>
+            <td><span class="step-num">2</span></td>
+            <td><strong>Female Co-Seat Block</strong></td>
+            <td>Book 1A as Female. Attempt booking 1B as Male ➔ Intercepted with exact client error message. Book 1B as Female ➔ Confirmed!</td>
           </tr>
           <tr>
-            <td><span class="step-num">3</span> <strong>Test Collision</strong></td>
-            <td>Menu <code>4</code> &rarr; Try booking <code>1A</code> again</td>
-            <td>Immediate rejection: <em>"Seat 1A is already booked."</em> Zero double-booking possible.</td>
+            <td><span class="step-num">3</span></td>
+            <td><strong>Group Exception</strong></td>
+            <td>Book 2A (Male) & 2B (Female) together in same PNR ➔ Permitted without error.</td>
           </tr>
           <tr>
-            <td><span class="step-num">4</span> <strong>Cancel Partial</strong></td>
-            <td>Menu <code>5</code> &rarr; Enter PNR &rarr; Cancel <code>1A</code></td>
-            <td>Seat <code>1A</code> released instantly. 100% refund calculated. Seat <code>1B</code> remains booked.</td>
-          </tr>
-          <tr>
-            <td><span class="step-num">5</span> <strong>Manifest</strong></td>
-            <td>Menu <code>6</code> &rarr; Route: <code>NR-101</code></td>
-            <td>Clean passenger manifest sorted by seat number with total passenger/seat counts.</td>
+            <td><span class="step-num">4</span></td>
+            <td><strong>Smart Waitlist Promotion</strong></td>
+            <td>Fill bus 100%. Add Male #1 & Female #2 to Waitlist. Cancel female seat 1B ➔ Male #1 skipped, Female #2 auto-promoted to PNR!</td>
           </tr>
         </tbody>
       </table>
 
-      <div class="badge-list" style="margin-top: 16px;">
-        <span class="badge badge-green">✓ All 11 Required Scenarios Covered</span>
-        <span class="badge badge-amber">✓ 40/40 Automated Unit & Integration Tests Passed</span>
-      </div>
-    </section>
-
-    <!-- ========================================== -->
-    <!-- SLIDE 5: Resilience & Persistence -->
-    <!-- ========================================== -->
-    <section class="slide" id="slide-5">
-      <div class="slide-meta">
-        <span class="slide-category">05 / Data Integrity & Testing</span>
-        <span class="slide-timing">⏱ 3:50 - 4:30 (40s)</span>
-      </div>
-      <h1 class="slide-title">Persistence & Crash-Proof Design</h1>
-      <p class="slide-subtitle">CSV engine with zero data loss and bulletproof input sanitization</p>
-
-      <div class="grid-2">
-        <div class="feature-card">
-          <div class="card-title"><span>💾</span> CSV Persistence Engine</div>
-          <p class="card-desc">
-            Located in <code>data/buses.csv</code> and <code>data/bookings.csv</code>:
-          </p>
-          <ul style="font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px; padding-left: 18px;">
-            <li><strong>Auto-bootstrapping:</strong> Preloads sample fleet if files do not exist.</li>
-            <li><strong>Comma-safe:</strong> Escapes commas in passenger names and addresses.</li>
-            <li><strong>Immediate flush:</strong> Saves state instantly on every booking, cancellation, or route addition.</li>
-            <li><strong>Restart safe:</strong> Fully reloads existing fleet and bookings when app restarts.</li>
-          </ul>
-        </div>
-
-        <div class="feature-card">
-          <div class="card-title"><span>🛡️</span> Crash-Proof Input Validation</div>
-          <p class="card-desc">
-            No unexpected exceptions or crashes. Every input is strictly filtered:
-          </p>
-          <ul style="font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px; padding-left: 18px;">
-            <li>Rejects negative or invalid ages (<code>age &gt; 0 && age &lt; 120</code>).</li>
-            <li>Enforces valid gender (<code>M / F / Other</code>).</li>
-            <li>Strict date-time validation using Java 8+ <code>LocalDateTime</code>.</li>
-            <li>Catches <code>InputMismatchException</code> on integer menu choices.</li>
-            <li>Duplicate seat request filtering in single batch bookings.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================== -->
-    <!-- SLIDE 6: Summary & Viva Defense -->
-    <!-- ========================================== -->
-    <section class="slide" id="slide-6">
-      <div class="slide-meta">
-        <span class="slide-category">06 / Conclusion & Defense</span>
-        <span class="slide-timing">⏱ 4:30 - 5:00 (30s)</span>
-      </div>
-      <h1 class="slide-title">Conclusion & Viva Q&A</h1>
-      <p class="slide-subtitle">Demonstrated Core Java Mastery with Enterprise Architecture</p>
-
-      <div class="grid-2">
-        <div class="feature-card">
-          <div class="card-title"><span>🎓</span> Key Takeaways</div>
-          <p class="card-desc">
-            • 100% functional requirements delivered using pure Core Java 17.<br><br>
-            • Strong demonstration of OOP principles: Encapsulation, Polymorphism, Abstraction, and Single Responsibility.<br><br>
-            • Production-ready modularity: Services can seamlessly plug into a Spring Boot REST API or SQL database without altering domain logic.
-          </p>
-          <div class="badge-list">
-            <span class="badge badge-green">Ready for Production</span>
-            <span class="badge badge-amber">Clean Code</span>
-          </div>
-        </div>
-
-        <div class="feature-card">
-          <div class="card-title"><span>💡</span> Anticipated Viva Q&A</div>
-          <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px;">
-            <div>
-              <strong style="color: var(--accent);">Q: Why use CSV instead of SQLite or JSON?</strong><br>
-              <span style="color: var(--text-muted);">A: Pure standard library requirement. Demonstrates file I/O, buffered readers, parsing, and serialization without external JARs.</span>
-            </div>
-            <div>
-              <strong style="color: var(--accent);">Q: How do you prevent double booking?</strong><br>
-              <span style="color: var(--text-muted);">A: Two-phase validation: verify availability across all requested seats before applying any state changes.</span>
-            </div>
-          </div>
-        </div>
+      <div class="badge-list" style="margin-top: 14px;">
+        <span class="badge badge-green">✓ 77/77 Automated Unit & Integration Tests Passed</span>
+        <span class="badge badge-amber">✓ Ready for Friday Night Launch</span>
       </div>
     </section>
 
@@ -787,11 +776,11 @@
   <!-- Expandable Speaker Notes Drawer -->
   <aside class="notes-drawer" id="notesDrawer">
     <div class="notes-header">
-      <span>🎤 Speaker Notes (Word-for-Word Script)</span>
+      <span>🎤 Speaker Notes (Word-for-Word Version 2.0 Script)</span>
       <span id="notesSlideIndicator">Slide 1 of 6</span>
     </div>
     <div class="notes-text" id="notesContent">
-      "Good morning/afternoon, everyone. Today I'm excited to present NammaRoute Travels, a complete, enterprise-grade Bus Booking Management System built purely in Core Java 17. The goal of this project was to engineer a robust, menu-driven reservation engine without relying on heavy third-party frameworks like Spring or external databases. It solves real-world fleet management problems: preventing double-booking, rendering dynamic visual coach layouts, maintaining passenger manifests, and persisting critical business data locally across restarts."
+      "Good morning everyone. Following our Version 1.0 demonstration, the bus owner was very pleased with our baseline reservation system. Today, I am proud to present NammaRoute Travels Version 2.0, developed specifically to prepare for Friday night high-demand Bengaluru–Goa departures. Version 2.0 implements three critical business upgrades: Dynamic Surge Pricing at 70% occupancy, the Female Passenger Co-Seat Safety Rule, and a FIFO Waitlist with smart safety auto-promotion. All Version 1.0 features remain 100% backward compatible, backed by 77 automated regression tests."
     </div>
   </aside>
 
@@ -818,25 +807,25 @@
   </footer>
 
   <script>
-    // Slide Data & Speaker Notes
+    // Speaker Notes for Version 2.0 Demo
     const speakerNotes = [
       // Slide 1
-      `"Good morning/afternoon, everyone. Today I'm excited to present NammaRoute Travels, a complete, enterprise-grade Bus Booking Management System built purely in Core Java 17. The goal of this project was to engineer a robust, menu-driven reservation engine without relying on heavy third-party frameworks like Spring or external databases. It solves real-world fleet management problems: preventing double-booking, rendering dynamic visual coach layouts, maintaining passenger manifests, and persisting critical business data locally across restarts."`,
+      `"Good morning everyone. Following our Version 1.0 demonstration, the bus owner was very pleased with our baseline reservation system. Today, I am proud to present NammaRoute Travels Version 2.0, developed specifically to prepare for Friday night high-demand Bengaluru–Goa departures. Version 2.0 implements three critical business upgrades: Dynamic Surge Pricing at 70% occupancy, the Female Passenger Co-Seat Safety Rule, and a FIFO Waitlist with smart safety auto-promotion. All Version 1.0 features remain 100% backward compatible, backed by 77 automated regression tests."`,
 
       // Slide 2
-      `"To ensure enterprise-grade maintainability, the application follows a strict 4-tier layered architecture. The Domain layer models core business entities like Bus, Seat, Passenger, and Booking with complete encapsulation. For example, a Seat's status can only be toggled through validated business methods, never directly. The Service layer isolates core logic—such as booking calculations and manifest generation. Finally, the Persistence layer abstracts CSV file I/O so the business logic remains completely storage-agnostic. We leveraged Java Collections like HashMaps for constant-time route lookups and immutable streams for manifest sorting."`,
+      `"Instead of stuffing new logic into the main class, we followed clean object-oriented architecture. We encapsulated surge calculations directly inside Bus.java, created CoSeatSafetyService to resolve coach geometry and validate co-passengers, and created WaitlistService to manage FIFO queues. All state changes are seamlessly persisted to data/buses.csv, data/bookings.csv, and data/waitlist.csv with zero external dependencies."`,
 
       // Slide 3
-      `"Let's highlight two core engineering features. First, dynamic visual seat layouts: the system renders physical coach diagrams directly in the terminal—handling both 32-seater 2x2 buses and 24-berth two-deck sleeper coaches with real-time availability badges. Second, Atomic Multi-Seat Booking: whenever a user requests multiple seats, the validator runs a two-phase check. If even one seat is invalid or booked, the entire transaction rolls back—preventing partial bookings. Third, flexible cancellations: staff can cancel an entire reservation or individual seats from a group, which immediately frees the seats and calculates an instant 100% refund."`,
+      `"Let's look at Change 1: Dynamic Surge Pricing. As soon as a bus reaches 70% occupancy—for example, 17 out of 24 berths on our sleeper coach—any remaining empty seats automatically cost 20% extra. Existing passengers retain their original booked price, ensuring complete fairness. Furthermore, if a customer cancels and occupancy falls back below 70%, new bookings instantly revert to the standard base fare. Everything is transparently quoted to the user before booking."`,
 
       // Slide 4
-      `"Now let's switch to the live demo. Watch how seamless this is: First, we inspect Bus NR-101 to Goa. The visual seat map shows all seats open in 2x2 layout. Next, we execute a multi-seat booking for seats 1A and 1B. Notice the instant generation of PNR-XXXXX with itemized fare breakdown. Now, if another passenger tries to book 1A, the system immediately blocks the collision. Next, we demonstrate partial cancellation: we cancel seat 1A. Notice how seat 1A immediately turns green/available on the coach map while 1B remains safely reserved. Finally, we generate the Passenger Manifest: it provides an operational boarding chart sorted by seat number with total passenger counts."`,
+      `"Next is Change 2: Female Passenger Co-Seat Safety. In any 2-seat pair—whether 1A/1B in a seater or lower berths in a sleeper—if one seat is booked by a solo female passenger, the adjacent seat can only be booked by another female. If a male passenger attempts to book, the system blocks it with the exact message: 'Sorry, seat 1B is reserved for a female co-passenger. Please choose another seat.' However, our algorithm includes a smart group exception: if a husband and wife or family book both seats together on the same PNR, the booking is allowed immediately."`,
 
       // Slide 5
-      `"Reliability is paramount. The system features a custom CSV persistence engine located in the data directory. It automatically initialises sample fleets if files are missing, handles commas in passenger names safely, and flushes state changes to disk immediately. If the application is terminated or the server restarts, every single booking and seat state is restored flawlessly. Additionally, our InputValidator provides complete protection against crash vectors—from negative ages to malformed dates. We verified this with a 40-test automated regression suite that achieves 100% pass rates across all functional requirements."`,
+      `"Change 3 introduces our FIFO Waitlist and Smart Auto-Promotion. When a bus is 100% full, up to 5 passengers can join the waitlist queue. The moment a seat is cancelled, the system automatically checks the waitlist and promotes the first eligible passenger to a confirmed PNR. Here is the smart safety check: if the freed seat is adjacent to a female passenger, and Person #1 on the waitlist is Male while Person #2 is Female, our algorithm skips Person #1, keeps them at the front of the queue, and promotes Person #2. No safety rules are ever violated."`,
 
       // Slide 6
-      `"In conclusion, NammaRoute Travels proves that clean, disciplined Core Java and solid OOP architecture can deliver a reliable, enterprise-ready system without any framework overhead. The codebase is modular, fully documented, and ready for future extensions like Spring Boot or SQL databases without modifying domain entities. Thank you for your time, and I am now open to any questions."`
+      `"To conclude, let's walk through our live demo: we will trigger dynamic surge pricing by booking to 70%, test the female co-seat block, demonstrate group bookings on the same PNR, and trigger smart auto-promotion from the waitlist. Our automated test suite executed all 77 tests with 0 failures, proving 100% backward compatibility and rock-solid reliability. We are ready for Friday's launch, and I'm happy to answer any questions."`
     ];
 
     let currentSlide = 1;
