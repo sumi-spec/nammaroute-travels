@@ -79,20 +79,27 @@ public class BookingService {
             }
         }
 
-        // 2. ATOMIC ASSIGNMENT: All seats verified; book them now
+        // 2. FEMALE CO-SEAT SAFETY VALIDATION (Version 2.0 Change 2)
+        String safetyError = CoSeatSafetyService.validateFemaleCoSeatRule(bus, passengerList, this);
+        if (safetyError != null) {
+            System.out.println(">> Booking Aborted: " + safetyError);
+            return null;
+        }
+
+        // 3. ATOMIC ASSIGNMENT: All seats and safety rules verified; book them now
         for (Passenger p : passengerList) {
             bus.bookSeat(p.getSeatNumber());
         }
 
-        // 3. Generate unique PNR and create booking
+        // 4. Generate unique PNR and create booking
         String pnr = generateUniquePnr();
         Booking booking = new Booking(pnr, bus.getRouteId(), LocalDateTime.now(), passengerList);
         bookings.put(pnr, booking);
 
-        // 4. Persist immediately
+        // 5. Persist immediately
         storageService.saveBookings(bookings.values());
 
-        // 5. Display official receipt
+        // 6. Display official receipt
         booking.printReceipt(bus);
 
         return booking;
@@ -235,5 +242,23 @@ public class BookingService {
     public Booking getBooking(String pnr) {
         if (pnr == null) return null;
         return bookings.get(pnr.trim().toUpperCase());
+    }
+
+    /**
+     * Finds the active confirmed passenger currently assigned to a specific seat on a route.
+     * Returns null if the seat is unbooked or cancelled.
+     */
+    public Passenger getActivePassengerOnSeat(String routeId, String seatNumber) {
+        if (routeId == null || seatNumber == null) return null;
+        String normalizedSeat = Seat.normalize(seatNumber);
+        for (Booking booking : bookings.values()) {
+            if (booking.isConfirmed() && booking.getRouteId().equalsIgnoreCase(routeId)) {
+                Passenger p = booking.getPassengerForSeat(normalizedSeat);
+                if (p != null && p.isConfirmed()) {
+                    return p;
+                }
+            }
+        }
+        return null;
     }
 }

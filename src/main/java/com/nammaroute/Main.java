@@ -7,6 +7,7 @@ import com.nammaroute.model.Passenger;
 import com.nammaroute.model.Seat;
 import com.nammaroute.service.BookingService;
 import com.nammaroute.service.BusService;
+import com.nammaroute.service.CoSeatSafetyService;
 import com.nammaroute.service.ManifestService;
 import com.nammaroute.storage.FileStorageService;
 import com.nammaroute.util.InputValidator;
@@ -207,7 +208,15 @@ public class Main {
             passengerList.add(p);
         }
 
-        // 5. Execute atomic booking
+        // 5. Female Co-Seat Safety Validation (Version 2.0 Change 2)
+        String safetyError = CoSeatSafetyService.validateFemaleCoSeatRule(bus, passengerList, bookingService);
+        if (safetyError != null) {
+            System.out.println("\n>> Booking Failed: " + safetyError);
+            System.out.println(">> No seats were booked. Please try again.\n");
+            return;
+        }
+
+        // 6. Execute atomic booking
         bookingService.bookTickets(routeId, passengerList);
     }
 
