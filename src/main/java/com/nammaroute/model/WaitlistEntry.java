@@ -56,3 +56,4 @@ public class WaitlistEntry {
                 waitlistId, passengerName, passengerAge, passengerGender, requestTime.format(FORMATTER));
     }
 }
+
