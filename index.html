@@ -406,6 +406,19 @@
       opacity: 0.65;
     }
 
+    .seat-btn.female-booked {
+      background: rgba(236, 72, 153, 0.25) !important;
+      border-color: #ec4899 !important;
+      color: #f472b6 !important;
+      opacity: 0.9 !important;
+    }
+
+    .seat-btn.female-reserved {
+      border: 1px dashed #ec4899 !important;
+      background: rgba(236, 72, 153, 0.12) !important;
+      color: #f472b6 !important;
+    }
+
     /* Seat Legend */
     .seat-legend {
       display: flex;
@@ -772,6 +785,9 @@
         <button class="tab-btn" onclick="switchTab('manifest')">
           📋 Passenger Manifests
         </button>
+        <button class="tab-btn" onclick="switchTab('waitlist')">
+          👥 FIFO Waitlist (V2.0)
+        </button>
       </div>
     </div>
 
@@ -829,6 +845,16 @@
                   style="background: var(--seat-booked-bg); border: 1px solid var(--seat-booked-border);"></div>
                 <span>Booked [XX]</span>
               </div>
+              <div class="legend-item">
+                <div class="legend-box"
+                  style="background: rgba(236, 72, 153, 0.25); border: 1px solid #ec4899;"></div>
+                <span>👩 Booked (Female)</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-box"
+                  style="background: rgba(236, 72, 153, 0.12); border: 1px dashed #ec4899;"></div>
+                <span>♀ Female Co-Seat</span>
+              </div>
             </div>
           </div>
         </div>
@@ -884,6 +910,8 @@
         <button class="action-chip" onclick="termCommand('5')">5. Cancel Tickets</button>
         <button class="action-chip" onclick="termCommand('6')">6. Manifest</button>
         <button class="action-chip" onclick="termCommand('7')">7. Search PNR</button>
+        <button class="action-chip" onclick="termCommand('8')">8. Waitlist</button>
+        <button class="action-chip" onclick="termCommand('9')">9. Exit</button>
         <button class="action-chip" onclick="termReset()">Clear Screen</button>
       </div>
 
@@ -1028,6 +1056,44 @@
       </div>
     </div>
 
+    <!-- TAB 6: FIFO WAITLIST MANAGEMENT (V2.0) -->
+    <div id="tab-waitlist" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span>👥 FIFO Waitlist Queue & Auto-Promotion System (Version 2.0)</span>
+          <button class="nav-btn" onclick="openJoinWaitlistModal()">+ Join Waitlist</button>
+        </div>
+        <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--border-light); display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Select Route:</label>
+          <select id="waitlistRouteSelect" onchange="renderWaitlistTable()" style="background: #1e293b; border: 1px solid var(--border-light); color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 16px;">
+          </select>
+          <span id="waitlistQueueCountBadge" style="font-size: 0.8rem; background: #374151; padding: 4px 10px; border-radius: 6px; color: var(--accent);">0 / 5 In Queue</span>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Priority #</th>
+                <th>Waitlist ID</th>
+                <th>Route ID</th>
+                <th>Passenger Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Joined Timestamp</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="waitlistTableBody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top: 14px; background: #172554; border: 1px solid #1e40af; border-radius: 8px; padding: 10px 14px; font-size: 0.84rem; color: #bfdbfe;">
+          💡 <strong>Smart Auto-Promotion Logic:</strong> When a confirmed ticket is cancelled, the system automatically checks the FIFO Waitlist and assigns the freed seat to the first eligible person. If the seat is adjacent to a solo female passenger, male passengers are safely held in place at the front of the queue and the next eligible female passenger is promoted immediately.
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- RECEIPT MODAL -->
@@ -1043,6 +1109,42 @@
       <button class="primary-btn" onclick="closeReceiptModal()" style="margin-top: 14px;">
         Close Receipt
       </button>
+    </div>
+  </div>
+
+  <!-- WAITLIST JOIN MODAL -->
+  <div class="receipt-modal" id="waitlistModal" onclick="closeWaitlistModal(event)">
+    <div class="receipt-box" style="max-width: 480px;" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 10px; margin-bottom: 14px;">
+        <span style="font-weight: 700; color: var(--accent); font-size: 1rem;">👥 Join FIFO Waitlist (Max 5 Slots)</span>
+        <button onclick="closeWaitlistModal()" style="background: transparent; border: none; color: #9ca3af; font-size: 1.3rem; cursor: pointer;">✕</button>
+      </div>
+      <div class="form-group">
+        <label>Bus Route *</label>
+        <select id="wlModalRouteSelect" class="form-control"></select>
+      </div>
+      <div class="form-group">
+        <label>Passenger Full Name *</label>
+        <input type="text" id="wlModalName" class="form-control" placeholder="e.g. Ananya Rao">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="form-group">
+          <label>Age (1-120) *</label>
+          <input type="number" id="wlModalAge" class="form-control" min="1" max="120" placeholder="26">
+        </div>
+        <div class="form-group">
+          <label>Gender *</label>
+          <select id="wlModalGender" class="form-control">
+            <option value="F">Female (F)</option>
+            <option value="M">Male (M)</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 14px;">
+        <button class="primary-btn" style="flex: 1;" onclick="submitWaitlistJoin()">Confirm & Join Queue</button>
+        <button class="nav-btn" onclick="closeWaitlistModal()">Cancel</button>
+      </div>
     </div>
   </div>
 
@@ -1258,6 +1360,8 @@
         renderBusesTable();
       } else if (tabId === 'manifest') {
         renderManifestTable();
+      } else if (tabId === 'waitlist') {
+        renderWaitlistTable();
       } else if (tabId === 'terminal') {
         setTimeout(() => document.getElementById('terminalInput').focus(), 50);
       }
@@ -1269,14 +1373,17 @@
     function populateRouteSelectors() {
       const select = document.getElementById('routeSelect');
       const manifestSelect = document.getElementById('manifestRouteSelect');
+      const wlSelect = document.getElementById('waitlistRouteSelect');
       select.innerHTML = '';
       manifestSelect.innerHTML = '';
+      if (wlSelect) wlSelect.innerHTML = '';
 
       for (const routeId in appState.buses) {
         const bus = appState.buses[routeId];
         const label = `${bus.routeId} (${bus.origin} to ${bus.destination}) - ₹${bus.price}`;
         select.innerHTML += `<option value="${bus.routeId}">${label}</option>`;
         manifestSelect.innerHTML += `<option value="${bus.routeId}">${label}</option>`;
+        if (wlSelect) wlSelect.innerHTML += `<option value="${bus.routeId}">${label}</option>`;
       }
     }
 
@@ -1405,13 +1512,46 @@
       const isSelected = selectedSeats.includes(seatKey);
 
       if (isBooked) {
-        btn.classList.add('booked');
-        btn.innerHTML = `<span style="font-size: 0.65rem;">[XX]</span><span style="font-size: 0.58rem;">Book</span>`;
+        let isFemale = false;
+        for (const pnr in appState.bookings) {
+          const b = appState.bookings[pnr];
+          if (b.routeId === bus.routeId && b.status !== 'CANCELLED') {
+            const p = b.passengers.find(x => x.seat === seatKey && x.status === 'CONFIRMED');
+            if (p && p.gender === 'F') { isFemale = true; break; }
+          }
+        }
+
+        if (isFemale) {
+          btn.classList.add('booked', 'female-booked');
+          btn.innerHTML = `<span style="font-size: 0.62rem;">👩[XX]</span><span style="font-size: 0.55rem;">Female</span>`;
+          btn.title = `Seat ${seatKey}: Booked by Female Passenger`;
+        } else {
+          btn.classList.add('booked');
+          btn.innerHTML = `<span style="font-size: 0.65rem;">[XX]</span><span style="font-size: 0.58rem;">Book</span>`;
+          btn.title = `Seat ${seatKey}: Booked`;
+        }
         btn.disabled = true;
       } else {
         btn.classList.add('available');
+        const adj = getAdjacentSeat(bus.type, seatKey);
+        let adjFemale = false;
+        if (adj && bus.booked.includes(adj)) {
+          for (const pnr in appState.bookings) {
+            const b = appState.bookings[pnr];
+            if (b.routeId === bus.routeId && b.status !== 'CANCELLED') {
+              const p = b.passengers.find(x => x.seat === adj && x.status === 'CONFIRMED');
+              if (p && p.gender === 'F') { adjFemale = true; break; }
+            }
+          }
+        }
+
+        if (adjFemale) {
+          btn.classList.add('female-reserved');
+          btn.title = `Safety Rule: Adjacent seat ${adj} is booked by Female. Reserved for female passenger.`;
+        }
+
         if (isSelected) btn.classList.add('selected');
-        btn.innerHTML = `<span>${displayLabel}</span><span style="font-size: 0.58rem; opacity: 0.85;">Avail</span>`;
+        btn.innerHTML = `<span>${displayLabel}</span><span style="font-size: 0.58rem; opacity: 0.9; color: ${adjFemale ? '#f472b6' : 'inherit'}; font-weight: ${adjFemale ? 'bold' : 'normal'};">${adjFemale ? '♀ Fem' : 'Avail'}</span>`;
         btn.onclick = () => toggleSeatSelection(seatKey);
       }
       return btn;
@@ -1442,6 +1582,20 @@
       countBadge.innerText = `${selectedSeats.length} Seat${selectedSeats.length !== 1 ? 's' : ''} Selected`;
 
       if (selectedSeats.length === 0) {
+        const avail = bus.total - bus.booked.length;
+        if (avail === 0) {
+          notice.innerHTML = `
+            <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 8px; padding: 16px; text-align: center;">
+              <div style="font-size: 1.05rem; font-weight: 700; color: #f87171; margin-bottom: 6px;">🛑 Bus is 100% Full!</div>
+              <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 12px;">0 empty seats remaining on this route. Join the FIFO Waitlist to be auto-promoted when someone cancels.</p>
+              <button class="primary-btn" style="width: auto; padding: 8px 16px; margin: 0 auto;" onclick="openJoinWaitlistModal('${bus.routeId}')">
+                👥 Join FIFO Waitlist Queue
+              </button>
+            </div>
+          `;
+        } else {
+          notice.innerHTML = `👈 Tap on any available green seat on the bus layout to begin reservation.`;
+        }
         notice.style.display = 'block';
         formSection.style.display = 'none';
         container.innerHTML = '';
@@ -1856,6 +2010,112 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
       return s1.localeCompare(s2);
     }
 
+    // --- TAB 6: WAITLIST MANAGEMENT (V2.0) ---
+    function renderWaitlistTable() {
+      const routeSelect = document.getElementById('waitlistRouteSelect');
+      const routeId = routeSelect ? (routeSelect.value || 'NR-101') : 'NR-101';
+      const tbody = document.getElementById('waitlistTableBody');
+      const badge = document.getElementById('waitlistQueueCountBadge');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (!appState.waitlists) appState.waitlists = {};
+      const queue = appState.waitlists[routeId] || [];
+
+      if (badge) {
+        badge.innerText = `${queue.length} / 5 In Queue`;
+        badge.style.color = queue.length >= 5 ? 'var(--accent-red)' : 'var(--accent-green)';
+      }
+
+      if (queue.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 18px;">No passengers currently on waitlist for route ${routeId}.</td></tr>`;
+        return;
+      }
+
+      queue.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong style="color: var(--accent);">#${idx + 1} (FIFO)</strong></td>
+          <td><span style="font-family: 'Fira Code', monospace; color: var(--accent-yellow);">${item.id}</span></td>
+          <td><span style="font-family: 'Fira Code', monospace;">${item.routeId}</span></td>
+          <td>${item.name}</td>
+          <td>${item.age}</td>
+          <td><span style="color: ${item.gender === 'F' ? '#f472b6' : 'var(--text-bright)'}; font-weight: 600;">${item.gender}</span></td>
+          <td><small style="color: var(--text-muted);">${item.timestamp}</small></td>
+          <td><span style="color: var(--accent-yellow); font-weight: 600;">WAITING</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openJoinWaitlistModal(preselectedRoute) {
+      const sel = document.getElementById('wlModalRouteSelect');
+      sel.innerHTML = '';
+      for (const id in appState.buses) {
+        const b = appState.buses[id];
+        sel.innerHTML += `<option value="${b.routeId}">${b.routeId} (${b.origin} -> ${b.destination})</option>`;
+      }
+      if (preselectedRoute) sel.value = preselectedRoute;
+      else if (document.getElementById('routeSelect')) sel.value = document.getElementById('routeSelect').value;
+
+      document.getElementById('wlModalName').value = '';
+      document.getElementById('wlModalAge').value = '';
+      document.getElementById('wlModalGender').value = 'F';
+      document.getElementById('waitlistModal').style.display = 'flex';
+    }
+
+    function closeWaitlistModal(event) {
+      if (!event || event.target.id === 'waitlistModal' || event.target.tagName === 'BUTTON') {
+        document.getElementById('waitlistModal').style.display = 'none';
+      }
+    }
+
+    function submitWaitlistJoin() {
+      const routeId = document.getElementById('wlModalRouteSelect').value;
+      const name = document.getElementById('wlModalName').value.trim();
+      const age = parseInt(document.getElementById('wlModalAge').value);
+      const gender = document.getElementById('wlModalGender').value;
+
+      if (!name) {
+        alert('Please enter passenger full name.');
+        return;
+      }
+      if (isNaN(age) || age < 1 || age > 120) {
+        alert('Please enter a valid age between 1 and 120.');
+        return;
+      }
+
+      if (!appState.waitlists) appState.waitlists = {};
+      if (!appState.waitlists[routeId]) appState.waitlists[routeId] = [];
+
+      const queue = appState.waitlists[routeId];
+      if (queue.length >= 5) {
+        alert(`Waitlist for Route ${routeId} is completely full (maximum 5 entries allowed).`);
+        return;
+      }
+
+      const wlId = `WL-${String(queue.length + 1).padStart(2, '0')}`;
+      const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+
+      const entry = {
+        id: wlId,
+        routeId: routeId,
+        name: name,
+        age: age,
+        gender: gender,
+        timestamp: nowStr
+      };
+
+      queue.push(entry);
+      saveState();
+
+      closeWaitlistModal();
+      renderWaitlistTable();
+
+      alert(`Successfully added to FIFO Waitlist!\nPriority: #${queue.length}\nWaitlist ID: ${wlId}\nRoute: ${routeId}\nPassenger: ${name} (${gender})\nYou will be auto-promoted when a confirmed seat is cancelled.`);
+      termPrint(`\n[WAITLIST ENROLLED] ${name} (${gender}) joined FIFO Waitlist #${queue.length} for ${routeId} (${wlId}).\n`);
+    }
+
     // --- TAB 2: INTERACTIVE TERMINAL ENGINE ---
     const termScreen = document.getElementById('consoleScreen');
     const termInput = document.getElementById('terminalInput');
@@ -1871,7 +2131,7 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
     function termReset() {
       termScreen.innerText = '';
       termState = { step: 'MENU', context: {} };
-      termPromptLabel.innerText = 'Enter choice (1-8):';
+      termPromptLabel.innerText = 'Enter choice (1-9):';
       showConsoleMenu();
     }
 
@@ -1888,7 +2148,8 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
 5. Cancel Tickets
 6. Generate Passenger Manifest
 7. Search Booking by PNR
-8. Exit
+8. View Waitlist Queue (FIFO)
+9. Exit
 `);
     }
 
@@ -2040,12 +2301,13 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
         case 'BOOK_PASS_GENDER':
           const g = raw.toUpperCase().startsWith('F') ? 'F' : (raw.toUpperCase().startsWith('M') ? 'M' : 'Other');
           const seatForPass = termState.context.seats[termState.context.passIndex];
+          const seatFare = getCurrentSeatPrice(termState.context.bus);
           termState.context.passengers.push({
             name: termState.context.currName,
             age: termState.context.currAge,
             gender: g,
             seat: seatForPass,
-            fare: termState.context.bus.price,
+            fare: seatFare,
             status: 'CONFIRMED'
           });
 
@@ -2053,6 +2315,16 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
           if (termState.context.passIndex < termState.context.seats.length) {
             promptNextPassenger();
           } else {
+            // Version 2.0 Change 2: Female Co-Seat Safety Rule Validation in Terminal
+            const safetyError = validateFemaleCoSeatRule(termState.context.bus, termState.context.passengers);
+            if (safetyError) {
+              termPrint(`\n>> [SAFETY VIOLATION BLOCKED] ${safetyError}\n>> Transaction aborted to ensure passenger safety.\n`);
+              termState.step = 'MENU';
+              termPromptLabel.innerText = 'Enter choice (1-9):';
+              showConsoleMenu();
+              break;
+            }
+
             const bookedPnr = generatePnr();
             const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
             termState.context.seats.forEach(s => termState.context.bus.booked.push(s));
@@ -2070,7 +2342,7 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
             printTermReceipt(bookedPnr);
 
             termState.step = 'MENU';
-            termPromptLabel.innerText = 'Enter choice (1-8):';
+            termPromptLabel.innerText = 'Enter choice (1-9):';
             showConsoleMenu();
           }
           break;
@@ -2121,12 +2393,16 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
             }
             if (cancelBus) {
               cancelBus.booked = cancelBus.booked.filter(s => s !== seatNum);
+              // Version 2.0 Change 3: Auto-promote from FIFO Waitlist
+              checkWaitlistAutoPromotion(cancelBus, seatNum);
             }
           });
 
           saveState();
           renderVisualSeatMap();
           renderBusesTable();
+          renderManifestTable();
+          renderWaitlistTable();
 
           termPrint(`
 ==========================================================================
@@ -2143,7 +2419,7 @@ Seats have been released and are now available for other passengers.
 ==========================================================================\n`);
 
           termState.step = 'MENU';
-          termPromptLabel.innerText = 'Enter choice (1-8):';
+          termPromptLabel.innerText = 'Enter choice (1-9):';
           showConsoleMenu();
           break;
 
@@ -2155,7 +2431,7 @@ Seats have been released and are now available for other passengers.
             termDisplayManifest(mBus);
           }
           termState.step = 'MENU';
-          termPromptLabel.innerText = 'Enter choice (1-8):';
+          termPromptLabel.innerText = 'Enter choice (1-9):';
           showConsoleMenu();
           break;
 
@@ -2168,7 +2444,7 @@ Seats have been released and are now available for other passengers.
             printTermReceipt(sPnr);
           }
           termState.step = 'MENU';
-          termPromptLabel.innerText = 'Enter choice (1-8):';
+          termPromptLabel.innerText = 'Enter choice (1-9):';
           showConsoleMenu();
           break;
       }
@@ -2185,7 +2461,7 @@ Seats have been released and are now available for other passengers.
 
         case '2':
           termDisplayAllBuses();
-          termPromptLabel.innerText = 'Enter choice (1-8):';
+          termPromptLabel.innerText = 'Enter choice (1-9):';
           showConsoleMenu();
           break;
 
@@ -2222,13 +2498,19 @@ Seats have been released and are now available for other passengers.
           break;
 
         case '8':
+          termDisplayWaitlist();
+          termPromptLabel.innerText = 'Enter choice (1-9):';
+          showConsoleMenu();
+          break;
+
+        case '9':
           termPrint('\nThank you for using NammaRoute Travels! Have a great day.\n');
-          termPromptLabel.innerText = 'App Exited (type 1-8 to restart):';
+          termPromptLabel.innerText = 'App Exited (type 1-9 to restart):';
           break;
 
         default:
-          termPrint('\n>> Error: Invalid choice. Please enter a number between 1 and 8.\n');
-          termPromptLabel.innerText = 'Enter choice (1-8):';
+          termPrint('\n>> Error: Invalid choice. Please enter a number between 1 and 9.\n');
+          termPromptLabel.innerText = 'Enter choice (1-9):';
           showConsoleMenu();
           break;
       }
@@ -2396,6 +2678,29 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
 ==========================================================================\n`);
     }
 
+    function termDisplayWaitlist() {
+      termPrint(`
+==========================================================================================================
+                                       FIFO WAITLIST QUEUES (VERSION 2.0)                                 
+==========================================================================================================
+Route ID   Priority  Waitlist ID  Passenger Name                   Age      Gender    Joined At           
+----------------------------------------------------------------------------------------------------------`);
+      let count = 0;
+      if (appState.waitlists) {
+        for (const routeId in appState.waitlists) {
+          const queue = appState.waitlists[routeId];
+          queue.forEach((item, idx) => {
+            count++;
+            termPrint(`${item.routeId.padEnd(10)} #${String(idx + 1).padEnd(9)} ${item.id.padEnd(12)} ${item.name.padEnd(32)} ${String(item.age).padEnd(8)} ${item.gender.padEnd(9)} ${item.timestamp}`);
+          });
+        }
+      }
+      if (count === 0) {
+        termPrint(`>> No passengers currently waiting in any route queue.`);
+      }
+      termPrint(`==========================================================================================================\n`);
+    }
+
     termInput.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
         processTerminalInput();
@@ -2407,6 +2712,7 @@ Total Amount Paid   : Rs. ${totalFare.toFixed(2)}
       renderVisualSeatMap();
       renderBusesTable();
       renderManifestTable();
+      renderWaitlistTable();
       termReset();
     }
 
