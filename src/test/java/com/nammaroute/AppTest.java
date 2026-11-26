@@ -7,9 +7,12 @@ import com.nammaroute.model.Passenger;
 import com.nammaroute.model.Seat;
 import com.nammaroute.service.BookingService;
 import com.nammaroute.service.BusService;
+import com.nammaroute.service.CoSeatSafetyService;
 import com.nammaroute.service.ManifestService;
+import com.nammaroute.service.WaitlistService;
 import com.nammaroute.storage.FileStorageService;
 import com.nammaroute.util.InputValidator;
+import com.nammaroute.model.WaitlistEntry;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -154,6 +157,161 @@ public class AppTest {
         assertEquals("1A", reloadedBooking.getActivePassengers().get(0).getSeatNumber(), "Scenario 11.5: Seat 1A persisted as active");
         assertTrue(reloaded101.getSeat("1A").isBooked(), "Scenario 11.6: Seat 1A is booked in reloaded bus");
         assertFalse(reloaded101.getSeat("1B").isBooked(), "Scenario 11.7: Cancelled Seat 1B is available in reloaded bus");
+
+        // =====================================================================
+        // VERSION 2.0 EVALUATION SCENARIOS
+        // =====================================================================
+
+        // SCENARIO 12: Dynamic Surge Pricing (70% Occupancy Rule)
+        System.out.println("\n[SCENARIO 12] Testing Dynamic Surge Pricing (70% Occupancy Rule)...");
+        // Use a test bus with 20 seats to exactly verify client's concrete example
+        Bus bus20 = new Bus("NR-200", "Bengaluru", "Mysuru",
+                LocalDateTime.parse("2026-12-01 10:00", Bus.DATE_TIME_FORMATTER), 1000.0, BusType.SEATER);
+        reloadedBusService.addBus(bus20);
+
+        // Initially 0 booked -> Standard price
+        assertEquals(1000.0, bus20.getCurrentSeatPrice(), 0.01, "Scenario 12.1: Initial price is base price (Rs. 1000)");
+        assertFalse(bus20.isSurgePricingActive(), "Scenario 12.2: Surge pricing initially inactive");
+
+        // Book 13 seats (13/32 or in our 20-seat example: 13 seats)
+        // For bus20 (32 seats in SEATER layout: 70% of 32 = 22.4 -> 23 seats)
+        // Let's test on NR-102 (24 berths: 70% of 24 = 16.8 -> 17 berths)
+        Bus bus102 = reloadedBusService.getBus("NR-102");
+        assertEquals(900.0, bus102.getBasePrice(), 0.01, "Scenario 12.3: NR-102 base price is 900.0");
+        assertFalse(bus102.isSurgePricingActive(), "Scenario 12.4: NR-102 surge inactive at 0% occupancy");
+
+        // Book 16 berths on NR-102 (16 / 24 = 66.7% < 70%)
+        List<Passenger> batch16 = new ArrayList<>();
+        for (int i = 1; i <= 12; i++) {
+            batch16.add(new Passenger("Pass-L" + i, 25, "M", "L" + i, bus102.getBasePrice()));
+        }
+        for (int i = 1; i <= 4; i++) {
+            batch16.add(new Passenger("Pass-U" + i, 25, "M", "U" + i, bus102.getBasePrice()));
+        }
+        Booking b16 = reloadedBookingService.bookTickets("NR-102", batch16);
+        assertTrue(b16 != null, "Scenario 12.5: Successfully booked 16 berths on NR-102");
+        assertEquals(16, bus102.getBookedSeatsCount(), "Scenario 12.6: Booked count is 16");
+        assertFalse(bus102.isSurgePricingActive(), "Scenario 12.7: Surge pricing still inactive at 16/24 (66.7%)");
+        assertEquals(900.0, bus102.getCurrentSeatPrice(), 0.01, "Scenario 12.8: Price per seat remains Rs. 900.0");
+
+        // Book 1 more berth (17th berth -> 17/24 = 70.8% >= 70%)
+        List<Passenger> p17 = Collections.singletonList(
+                new Passenger("Pass-U5", 29, "M", "U5", bus102.getCurrentSeatPrice()));
+        Booking b17 = reloadedBookingService.bookTickets("NR-102", p17);
+        assertTrue(b17 != null, "Scenario 12.9: 17th berth booked");
+        assertTrue(bus102.isSurgePricingActive(), "Scenario 12.10: Surge pricing ACTIVATED at 17/24 (>=70% occupancy)");
+        assertEquals(1080.0, bus102.getCurrentSeatPrice(), 0.01, "Scenario 12.11: Empty seats cost 20% extra (Rs. 1080.0)");
+
+        // Previous passengers retain their original booked price
+        assertEquals(900.0, b16.getPassengers().get(0).getFare(), 0.01, "Scenario 12.12: Existing bookings retain original price (Rs. 900.0)");
+
+        // Cancellation drops occupancy back below 70% -> price reverts to normal
+        reloadedBookingService.cancelTickets(b17.getPnr(), null);
+        assertEquals(16, bus102.getBookedSeatsCount(), "Scenario 12.13: Booked seats dropped to 16 after cancellation");
+        assertFalse(bus102.isSurgePricingActive(), "Scenario 12.14: Surge pricing DEACTIVATED when dropping below 70%");
+        assertEquals(900.0, bus102.getCurrentSeatPrice(), 0.01, "Scenario 12.15: Fare reverted back to standard Rs. 900.0");
+
+        // SCENARIO 13: Female Passenger Co-Seat Safety Rule
+        System.out.println("\n[SCENARIO 13] Testing Female Passenger Co-Seat Safety Rule...");
+        Bus bus103 = reloadedBusService.getBus("NR-103"); // 2x2 Seater
+
+        // 13.1: Solo female passenger books seat 1A
+        List<Passenger> femalePass = Collections.singletonList(
+                new Passenger("Ananya Roy", 24, "F", "1A", bus103.getBasePrice()));
+        Booking bFemale = reloadedBookingService.bookTickets("NR-103", femalePass);
+        assertTrue(bFemale != null, "Scenario 13.1: Female passenger Ananya booked 1A");
+
+        // 13.2: Male passenger attempts to book adjacent seat 1B -> MUST BE BLOCKED
+        List<Passenger> maleSolo = Collections.singletonList(
+                new Passenger("Karthik N", 28, "M", "1B", bus103.getBasePrice()));
+        String safetyError = CoSeatSafetyService.validateFemaleCoSeatRule(bus103, maleSolo, reloadedBookingService);
+        assertTrue(safetyError != null && safetyError.contains("reserved for a female co-passenger"),
+                "Scenario 13.2: Safety rule blocks male booking on 1B: " + safetyError);
+
+        Booking blockedMale = reloadedBookingService.bookTickets("NR-103", maleSolo);
+        assertTrue(blockedMale == null, "Scenario 13.3: BookingService atomically rejects male booking on 1B");
+        assertFalse(bus103.getSeat("1B").isBooked(), "Scenario 13.4: Seat 1B remains open");
+
+        // 13.3: Another female passenger books seat 1B -> MUST SUCCEED
+        List<Passenger> femaleCoPass = Collections.singletonList(
+                new Passenger("Divya Rao", 26, "F", "1B", bus103.getBasePrice()));
+        Booking allowedFemale = reloadedBookingService.bookTickets("NR-103", femaleCoPass);
+        assertTrue(allowedFemale != null, "Scenario 13.5: Female co-passenger Divya booked 1B successfully");
+        assertTrue(bus103.getSeat("1B").isBooked(), "Scenario 13.6: Seat 1B is now booked");
+
+        // 13.4: Group / Family booking exception: Male & Female booking adjacent pair (2A & 2B) together
+        List<Passenger> familyBooking = Arrays.asList(
+                new Passenger("Suresh Kumar", 35, "M", "2A", bus103.getBasePrice()),
+                new Passenger("Lakshmi Suresh", 32, "F", "2B", bus103.getBasePrice())
+        );
+        String groupSafetyError = CoSeatSafetyService.validateFemaleCoSeatRule(bus103, familyBooking, reloadedBookingService);
+        assertTrue(groupSafetyError == null, "Scenario 13.7: Group exception permits Male & Female booking pair together");
+        Booking bFamily = reloadedBookingService.bookTickets("NR-103", familyBooking);
+        assertTrue(bFamily != null, "Scenario 13.8: Family booking (2A, 2B) confirmed on same PNR");
+
+        // SCENARIO 14: FIFO Waitlist & Smart Safety Auto-Promotion
+        System.out.println("\n[SCENARIO 14] Testing FIFO Waitlist & Smart Safety Auto-Promotion...");
+        WaitlistService waitlistService = new WaitlistService(newStorage);
+        reloadedBookingService.setWaitlistService(waitlistService);
+
+        // Fill remaining seats on NR-103 to 100% capacity
+        List<Passenger> fillSeats = new ArrayList<>();
+        for (Seat s : bus103.getSeats().values()) {
+            if (!s.isBooked()) {
+                fillSeats.add(new Passenger("Filler-" + s.getSeatNumber(), 22, "M", s.getSeatNumber(), bus103.getBasePrice()));
+            }
+        }
+        reloadedBookingService.bookTickets("NR-103", fillSeats);
+        assertEquals(0, bus103.getAvailableSeatsCount(), "Scenario 14.1: NR-103 is now 100% full (0 available)");
+
+        // Direct booking rejected because bus is full
+        Booking fullReject = reloadedBookingService.bookTickets("NR-103",
+                Collections.singletonList(new Passenger("Extra", 25, "M", "1C", bus103.getBasePrice())));
+        assertTrue(fullReject == null, "Scenario 14.2: Direct booking rejected on 100% full bus");
+
+        // Add 5 passengers to FIFO waitlist
+        WaitlistEntry w1 = waitlistService.addToWaitlist(bus103, "Dev Kumar", 30, "M");      // #1 Male
+        WaitlistEntry w2 = waitlistService.addToWaitlist(bus103, "Sneha Patel", 27, "F");    // #2 Female
+        WaitlistEntry w3 = waitlistService.addToWaitlist(bus103, "Rohan Das", 29, "M");      // #3 Male
+        WaitlistEntry w4 = waitlistService.addToWaitlist(bus103, "Pooja Hegde", 25, "F");    // #4 Female
+        WaitlistEntry w5 = waitlistService.addToWaitlist(bus103, "Vikram Seth", 33, "M");    // #5 Male
+
+        assertTrue(w1 != null && w2 != null && w5 != null, "Scenario 14.3: Added 5 passengers to waitlist");
+        assertEquals(5, waitlistService.getWaitlistCount("NR-103"), "Scenario 14.4: Waitlist count is 5/5");
+        assertTrue(waitlistService.isWaitlistFull("NR-103"), "Scenario 14.5: Waitlist is at max capacity");
+
+        // 6th passenger attempt rejected
+        WaitlistEntry w6 = waitlistService.addToWaitlist(bus103, "Excess Pass", 40, "M");
+        assertTrue(w6 == null, "Scenario 14.6: 6th waitlist request rejected (Max 5 enforced)");
+
+        // 14.5: Smart Safety Auto-Promotion Test
+        // Seat 1A is booked by Female Ananya. Seat 1B is booked by Female Divya.
+        // If Divya cancels 1B:
+        // Seat 1B is freed, but adjacent seat 1A is Female Ananya!
+        // Person #1 on waitlist is Dev (Male). Person #2 is Sneha (Female).
+        // System must SKIP Dev (keep him at #1) and AUTO-PROMOTE Sneha (Female) to 1B!
+        System.out.println("Executing Smart Safety Auto-Promotion: Divya cancels seat 1B...");
+        reloadedBookingService.cancelTickets(allowedFemale.getPnr(), Collections.singletonList("1B"));
+
+        // Verify Seat 1B is re-booked immediately by Sneha!
+        assertTrue(bus103.getSeat("1B").isBooked(), "Scenario 14.7: Seat 1B was auto-promoted and re-booked immediately");
+        Passenger newPassenger1B = reloadedBookingService.getActivePassengerOnSeat("NR-103", "1B");
+        assertTrue(newPassenger1B != null, "Scenario 14.8: Passenger exists on seat 1B");
+        assertEquals("Sneha Patel", newPassenger1B.getName(), "Scenario 14.9: Smart Safety skipped Dev and promoted Sneha (Female)!");
+        assertEquals("F", newPassenger1B.getGender(), "Scenario 14.10: Promoted passenger gender is Female");
+
+        // Dev Kumar must still be #1 in line on the waitlist!
+        List<WaitlistEntry> updatedQueue = waitlistService.getWaitlistQueue("NR-103");
+        assertEquals(4, updatedQueue.size(), "Scenario 14.11: Waitlist size reduced to 4");
+        assertEquals("Dev Kumar", updatedQueue.get(0).getPassengerName(), "Scenario 14.12: Dev Kumar remains #1 in FIFO queue");
+
+        // SCENARIO 15: Version 2.0 Persistence Across Restart
+        System.out.println("\n[SCENARIO 15] Verifying Waitlist & Version 2.0 State Persistence Across Restart...");
+        FileStorageService v2Storage = new FileStorageService(testDataDir);
+        WaitlistService restartedWaitlist = new WaitlistService(v2Storage);
+        assertEquals(4, restartedWaitlist.getWaitlistCount("NR-103"), "Scenario 15.1: 4 waitlist entries persisted to waitlist.csv");
+        assertEquals("Dev Kumar", restartedWaitlist.getWaitlistQueue("NR-103").get(0).getPassengerName(),
+                "Scenario 15.2: Dev Kumar persisted as #1 in FIFO queue");
 
         // Clean up test files
         cleanDirectory(new File(testDataDir));
