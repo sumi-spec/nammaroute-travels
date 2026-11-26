@@ -22,6 +22,7 @@ public class BookingService {
     private final BusService busService;
     private final FileStorageService storageService;
     private final Random random;
+    private WaitlistService waitlistService;
 
     public BookingService(BusService busService, FileStorageService storageService) {
         this.busService = busService;
@@ -29,6 +30,16 @@ public class BookingService {
         this.bookings = new LinkedHashMap<>();
         this.random = new Random();
         loadBookings();
+    }
+
+    public void setWaitlistService(WaitlistService waitlistService) {
+        this.waitlistService = waitlistService;
+    }
+
+    public synchronized void addConfirmedBooking(Booking booking) {
+        if (booking != null) {
+            bookings.put(booking.getPnr(), booking);
+        }
     }
 
     public void loadBookings() {
@@ -136,16 +147,23 @@ public class BookingService {
         double refundAmount = 0.0;
 
         if (cancelEntire) {
-            for (Passenger p : activePassengers) {
-                if (bus != null) {
-                    bus.releaseSeat(p.getSeatNumber());
-                }
-                cancelledSeatsList.add(p.getSeatNumber());
-            }
             int cancelledCount = activePassengers.size();
             double farePerSeat = (cancelledCount > 0) ? activePassengers.get(0).getFare() : (bus != null ? bus.getBasePrice() : 0.0);
             refundAmount = calculateRefund(cancelledCount, farePerSeat);
             booking.cancelAll();
+
+            for (Passenger p : activePassengers) {
+                String seatNum = p.getSeatNumber();
+                if (bus != null) {
+                    bus.releaseSeat(seatNum);
+                }
+                cancelledSeatsList.add(seatNum);
+
+                // Check FIFO Waitlist for Auto-Promotion (Version 2.0 Change 3)
+                if (waitlistService != null && bus != null) {
+                    waitlistService.promoteNextEligiblePassenger(bus, seatNum, this);
+                }
+            }
         } else {
             // Cancel specific seats
             // Validate all requested seats are actually active in this booking
@@ -171,6 +189,11 @@ public class BookingService {
                 }
                 booking.cancelSeat(seatNum);
                 cancelledSeatsList.add(seatNum);
+
+                // Check FIFO Waitlist for Auto-Promotion (Version 2.0 Change 3)
+                if (waitlistService != null && bus != null) {
+                    waitlistService.promoteNextEligiblePassenger(bus, seatNum, this);
+                }
             }
         }
 

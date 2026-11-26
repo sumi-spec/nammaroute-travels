@@ -4,6 +4,7 @@ import com.nammaroute.model.Booking;
 import com.nammaroute.model.Bus;
 import com.nammaroute.model.Passenger;
 import com.nammaroute.model.Seat;
+import com.nammaroute.model.WaitlistEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +51,16 @@ public class ManifestService {
     }
 
     /**
-     * Generates and prints the passenger manifest for a given Route ID.
+     * Backward-compatible 3-parameter manifest generator.
      */
     public void generateManifest(String routeId, BusService busService, BookingService bookingService) {
+        generateManifest(routeId, busService, bookingService, null);
+    }
+
+    /**
+     * Generates and prints the passenger manifest and active waitlist for a given Route ID.
+     */
+    public void generateManifest(String routeId, BusService busService, BookingService bookingService, WaitlistService waitlistService) {
         if (routeId == null || routeId.trim().isEmpty()) {
             System.out.println(">> Error: Route ID cannot be empty.");
             return;
@@ -120,6 +128,22 @@ public class ManifestService {
         System.out.printf("Total Booked Seats : %d%n", bus.getBookedSeatsCount());
         System.out.printf("Total Available    : %d%n", bus.getAvailableSeatsCount());
         System.out.printf("Total Passengers   : %d%n", entries.size());
+
+        if (waitlistService != null) {
+            List<WaitlistEntry> wl = waitlistService.getWaitlistQueue(normalizedRoute);
+            System.out.printf("Waitlist Queue     : %d passenger(s) waiting%n", wl.size());
+            if (!wl.isEmpty()) {
+                System.out.println("----------------------------------------------------------------------------------------------------------");
+                System.out.println("ACTIVE WAITLIST PASSENGERS (FIFO QUEUE):");
+                int pos = 1;
+                for (WaitlistEntry w : wl) {
+                    System.out.printf("  #%d. %-24s [%s] - Age: %d, Gender: %s (Requested: %s)%n",
+                            pos++, w.getPassengerName(), w.getWaitlistId(), w.getPassengerAge(),
+                            w.getPassengerGender(), w.getRequestTime().format(WaitlistEntry.FORMATTER));
+                }
+            }
+        }
+
         System.out.println("==========================================================================================================");
         System.out.println();
     }

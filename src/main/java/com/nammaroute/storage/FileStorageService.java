@@ -4,6 +4,7 @@ import com.nammaroute.model.Booking;
 import com.nammaroute.model.Bus;
 import com.nammaroute.model.BusType;
 import com.nammaroute.model.Passenger;
+import com.nammaroute.model.WaitlistEntry;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -28,9 +29,11 @@ public class FileStorageService {
     private final String dataDirPath;
     private final String busesFilePath;
     private final String bookingsFilePath;
+    private final String waitlistFilePath;
 
     private static final String BUSES_HEADER = "RouteId,Origin,Destination,DepartureTime,BasePrice,BusType";
     private static final String BOOKINGS_HEADER = "PNR,RouteId,BookingTime,SeatNumber,PassengerName,PassengerAge,PassengerGender,Fare,Status";
+    private static final String WAITLIST_HEADER = "RouteId,WaitlistId,PassengerName,PassengerAge,PassengerGender,RequestTime";
 
     public FileStorageService() {
         this("data");
@@ -40,6 +43,7 @@ public class FileStorageService {
         this.dataDirPath = dataDir;
         this.busesFilePath = dataDir + File.separator + "buses.csv";
         this.bookingsFilePath = dataDir + File.separator + "bookings.csv";
+        this.waitlistFilePath = dataDir + File.separator + "waitlist.csv";
         initializeStorage();
     }
 
@@ -61,6 +65,11 @@ public class FileStorageService {
             File bookingsFile = new File(bookingsFilePath);
             if (!bookingsFile.exists()) {
                 bookingsFile.createNewFile();
+            }
+
+            File waitlistFile = new File(waitlistFilePath);
+            if (!waitlistFile.exists()) {
+                waitlistFile.createNewFile();
             }
         } catch (IOException e) {
             System.err.println("Warning: Unable to initialize data storage directory: " + e.getMessage());
@@ -254,6 +263,78 @@ public class FileStorageService {
             return true;
         } catch (IOException e) {
             System.err.println("Error saving bookings: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Loads the waitlist queues from waitlist.csv.
+     */
+    public Map<String, List<WaitlistEntry>> loadWaitlist() {
+        Map<String, List<WaitlistEntry>> waitlists = new LinkedHashMap<>();
+        File file = new File(waitlistFilePath);
+
+        if (!file.exists() || file.length() == 0) {
+            return waitlists;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line = reader.readLine(); // Header
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty()) continue;
+                List<String> tokens = parseCsvLine(line);
+                if (tokens.size() >= 6) {
+                    try {
+                        String routeId = tokens.get(0).trim().toUpperCase();
+                        String waitlistId = tokens.get(1).trim().toUpperCase();
+                        String name = tokens.get(2).trim();
+                        int age = Integer.parseInt(tokens.get(3).trim());
+                        String gender = tokens.get(4).trim().toUpperCase();
+                        LocalDateTime requestTime = LocalDateTime.parse(tokens.get(5).trim(), WaitlistEntry.FORMATTER);
+
+                        WaitlistEntry entry = new WaitlistEntry(waitlistId, routeId, name, age, gender, requestTime);
+                        waitlists.computeIfAbsent(routeId, k -> new ArrayList<>()).add(entry);
+                    } catch (Exception ex) {
+                        System.err.println("Warning: Skipping corrupted waitlist record: " + line + " (" + ex.getMessage() + ")");
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading waitlist file: " + e.getMessage());
+        }
+
+        return waitlists;
+    }
+
+    /**
+     * Saves all waitlist queues to waitlist.csv.
+     */
+    public synchronized boolean saveWaitlist(Map<String, List<WaitlistEntry>> waitlistMap) {
+        File file = new File(waitlistFilePath);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
+            writer.write(WAITLIST_HEADER);
+            writer.newLine();
+
+            if (waitlistMap != null) {
+                for (Map.Entry<String, List<WaitlistEntry>> entry : waitlistMap.entrySet()) {
+                    String routeId = entry.getKey();
+                    for (WaitlistEntry wl : entry.getValue()) {
+                        String line = String.format("%s,%s,%s,%d,%s,%s",
+                                escapeCsv(routeId),
+                                escapeCsv(wl.getWaitlistId()),
+                                escapeCsv(wl.getPassengerName()),
+                                wl.getPassengerAge(),
+                                escapeCsv(wl.getPassengerGender()),
+                                wl.getRequestTime().format(WaitlistEntry.FORMATTER));
+                        writer.write(line);
+                        writer.newLine();
+                    }
+                }
+            }
+            return true;
+        } catch (IOException e) {
+            System.err.println("Error saving waitlist: " + e.getMessage());
             return false;
         }
     }

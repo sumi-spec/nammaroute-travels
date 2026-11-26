@@ -9,6 +9,7 @@ import com.nammaroute.service.BookingService;
 import com.nammaroute.service.BusService;
 import com.nammaroute.service.CoSeatSafetyService;
 import com.nammaroute.service.ManifestService;
+import com.nammaroute.service.WaitlistService;
 import com.nammaroute.storage.FileStorageService;
 import com.nammaroute.util.InputValidator;
 
@@ -24,6 +25,7 @@ import java.util.Scanner;
 public class Main {
     private final BusService busService;
     private final BookingService bookingService;
+    private final WaitlistService waitlistService;
     private final ManifestService manifestService;
     private final Scanner scanner;
 
@@ -31,6 +33,8 @@ public class Main {
         FileStorageService storageService = new FileStorageService("data");
         this.busService = new BusService(storageService);
         this.bookingService = new BookingService(busService, storageService);
+        this.waitlistService = new WaitlistService(storageService);
+        this.bookingService.setWaitlistService(waitlistService);
         this.manifestService = new ManifestService();
         this.scanner = new Scanner(System.in);
     }
@@ -73,11 +77,15 @@ public class Main {
                         handleSearchBookingByPnr();
                         break;
                     case "8":
+                        handleViewWaitlist();
+                        break;
+                    case "9":
+                    case "EXIT":
                         System.out.println("\nThank you for using NammaRoute Travels! Have a great day.");
                         running = false;
                         break;
                     default:
-                        System.out.println("\n>> Error: Invalid choice. Please enter a number between 1 and 8.\n");
+                        System.out.println("\n>> Error: Invalid choice. Please enter a number between 1 and 9.\n");
                         break;
                 }
             } catch (NoSuchElementException | IllegalStateException e) {
@@ -102,7 +110,8 @@ public class Main {
         System.out.println("5. Cancel Tickets");
         System.out.println("6. Generate Passenger Manifest");
         System.out.println("7. Search Booking by PNR");
-        System.out.println("8. Exit");
+        System.out.println("8. View Waitlist Queue (FIFO)");
+        System.out.println("9. Exit");
         System.out.println();
     }
 
@@ -143,10 +152,16 @@ public class Main {
         System.out.println("\n--- [3] VIEW SEAT AVAILABILITY ---");
         String routeId = InputValidator.readNonEmptyString(scanner, "Enter Route ID: ", "Route ID");
         busService.displaySeatMap(routeId);
+
+        int wlCount = waitlistService.getWaitlistCount(routeId);
+        if (wlCount > 0) {
+            System.out.printf(">> FIFO Waitlist Status: %d passenger(s) currently waiting for Route %s.%n%n",
+                    wlCount, routeId.toUpperCase());
+        }
     }
 
     /**
-     * Feature 3: Book Tickets and Generate PNR
+     * Feature 3: Book Tickets and Generate PNR (with FIFO Waitlist support)
      */
     private void handleBookTickets() {
         System.out.println("\n--- [4] BOOK TICKETS ---");
@@ -157,8 +172,27 @@ public class Main {
             return;
         }
 
+        // Change 3: Waitlist handling when bus is 100% full
         if (bus.getAvailableSeatsCount() == 0) {
-            System.out.println(">> Sorry, bus route '" + routeId + "' is fully booked!\n");
+            System.out.printf("%n>> Bus route '%s' is 100%% FULL (0 empty seats remaining)!%n", routeId);
+            if (waitlistService.isWaitlistFull(routeId)) {
+                System.out.println(">> The FIFO Waitlist for this route is also at maximum capacity (5/5).");
+                System.out.println(">> No further bookings or waitlist requests can be accepted at this time.\n");
+                return;
+            }
+
+            int currentWaiting = waitlistService.getWaitlistCount(routeId);
+            System.out.printf(">> Would you like to join the FIFO Waitlist? (%d/5 currently waiting) [Y/N]: ", currentWaiting);
+            String joinChoice = scanner.nextLine();
+            if (joinChoice != null && (joinChoice.trim().equalsIgnoreCase("Y") || joinChoice.trim().equalsIgnoreCase("YES"))) {
+                System.out.println("\nPlease enter passenger details for Waitlist:");
+                String name = InputValidator.readNonEmptyString(scanner, "Full Name: ", "Passenger Name");
+                int age = InputValidator.readIntInRange(scanner, "Age (1-120): ", 1, 120, "Age");
+                String gender = InputValidator.readGender(scanner, "Gender (M/F/Other): ");
+                waitlistService.addToWaitlist(bus, name, age, gender);
+            } else {
+                System.out.println(">> Waitlist request skipped. Returning to menu.\n");
+            }
             return;
         }
 
@@ -260,12 +294,12 @@ public class Main {
     }
 
     /**
-     * Feature 5: Generate Passenger Manifest
+     * Feature 5: Generate Passenger Manifest (includes active Waitlist queue)
      */
     private void handleGenerateManifest() {
         System.out.println("\n--- [6] GENERATE PASSENGER MANIFEST ---");
         String routeId = InputValidator.readNonEmptyString(scanner, "Enter Route ID: ", "Route ID");
-        manifestService.generateManifest(routeId, busService, bookingService);
+        manifestService.generateManifest(routeId, busService, bookingService, waitlistService);
     }
 
     /**
@@ -275,5 +309,21 @@ public class Main {
         System.out.println("\n--- [7] SEARCH BOOKING BY PNR ---");
         String pnr = InputValidator.readNonEmptyString(scanner, "Enter PNR Number: ", "PNR");
         bookingService.searchBookingByPnr(pnr);
+    }
+
+    /**
+     * Feature 8: View Waitlist Queue (Version 2.0 Change 3)
+     */
+    private void handleViewWaitlist() {
+        System.out.println("\n--- [8] VIEW FIFO WAITLIST QUEUE ---");
+        System.out.print("Enter Route ID (e.g. NR-101, or press Enter to view all): ");
+        String routeId = scanner.nextLine();
+        if (routeId == null || routeId.trim().isEmpty()) {
+            for (Bus bus : busService.getAllBuses()) {
+                waitlistService.displayWaitlist(bus.getRouteId());
+            }
+        } else {
+            waitlistService.displayWaitlist(routeId.trim());
+        }
     }
 }
