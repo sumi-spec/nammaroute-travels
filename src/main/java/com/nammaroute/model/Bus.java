@@ -19,6 +19,8 @@ public class Bus {
     private final Map<String, Seat> seats;
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final double SURGE_OCCUPANCY_THRESHOLD = 0.70; // 70% Occupancy Rule (Version 2.0)
+    public static final double SURGE_MULTIPLIER = 1.20;           // 20% Extra Surge Price
 
     public Bus(String routeId, String origin, String destination, LocalDateTime departureTime, double basePrice, BusType busType) {
         this.routeId = routeId != null ? routeId.trim().toUpperCase() : "";
@@ -108,6 +110,46 @@ public class Bus {
         return getTotalSeats() - getBookedSeatsCount();
     }
 
+    public double getOccupancyRate() {
+        if (getTotalSeats() == 0) return 0.0;
+        return (double) getBookedSeatsCount() / getTotalSeats();
+    }
+
+    public double getOccupancyPercentage() {
+        return getOccupancyRate() * 100.0;
+    }
+
+    /**
+     * Change 1: Dynamic Surge Pricing (70% Occupancy Rule)
+     * When occupancy is >= 70%, remaining empty seats automatically cost 20% extra.
+     */
+    public boolean isSurgePricingActive() {
+        return getOccupancyRate() >= SURGE_OCCUPANCY_THRESHOLD;
+    }
+
+    /**
+     * Returns the current price for a new single seat booking.
+     */
+    public double getCurrentSeatPrice() {
+        if (isSurgePricingActive()) {
+            return Math.round(basePrice * SURGE_MULTIPLIER * 100.0) / 100.0;
+        }
+        return basePrice;
+    }
+
+    /**
+     * Calculates the price for a specific seat in a batch booking.
+     * Takes into account the seat's position if the batch crosses the 70% threshold.
+     */
+    public double calculatePriceForSeatAllocation(int additionalBookedBeforeThisSeat) {
+        int projectedBooked = getBookedSeatsCount() + additionalBookedBeforeThisSeat;
+        double projectedOccupancy = (double) projectedBooked / getTotalSeats();
+        if (projectedOccupancy >= SURGE_OCCUPANCY_THRESHOLD) {
+            return Math.round(basePrice * SURGE_MULTIPLIER * 100.0) / 100.0;
+        }
+        return basePrice;
+    }
+
     public Map<String, Seat> getSeats() {
         return Collections.unmodifiableMap(seats);
     }
@@ -122,7 +164,14 @@ public class Bus {
         System.out.println("==========================================================================");
         System.out.printf("Bus Type    : %s (%d Seats)%n", busType.getDisplayName(), getTotalSeats());
         System.out.printf("Departure   : %s%n", departureTime.format(DATE_TIME_FORMATTER));
-        System.out.printf("Ticket Fare : Rs. %.2f per seat%n", basePrice);
+        System.out.printf("Base Fare   : Rs. %.2f per seat%n", basePrice);
+        if (isSurgePricingActive()) {
+            System.out.printf("Current Fare: Rs. %.2f  [⚡ 20%% DYNAMIC SURGE ACTIVE - Occupancy: %.1f%%]%n",
+                    getCurrentSeatPrice(), getOccupancyPercentage());
+        } else {
+            System.out.printf("Current Fare: Rs. %.2f  [STANDARD FARE - Occupancy: %.1f%%]%n",
+                    getCurrentSeatPrice(), getOccupancyPercentage());
+        }
         System.out.printf("Capacity    : Total: %d  |  Booked: %d  |  Available: %d%n",
                 getTotalSeats(), getBookedSeatsCount(), getAvailableSeatsCount());
         System.out.println("--------------------------------------------------------------------------");

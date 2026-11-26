@@ -180,6 +180,13 @@ public class Main {
 
         // 4. Collect passenger details for each seat
         System.out.printf("%nRequested %d seat(s): %s%n", requestedSeats.size(), requestedSeats);
+        if (bus.isSurgePricingActive()) {
+            System.out.printf(">> NOTICE: Dynamic Surge Pricing Active (Bus is %.1f%% full). Current seat fare is Rs. %.2f (+20%%).%n",
+                    bus.getOccupancyPercentage(), bus.getCurrentSeatPrice());
+        } else {
+            System.out.printf(">> Standard Ticket Fare: Rs. %.2f per seat (Occupancy: %.1f%%).%n",
+                    bus.getBasePrice(), bus.getOccupancyPercentage());
+        }
         System.out.println("Please enter passenger details for each seat:");
 
         List<Passenger> passengerList = new ArrayList<>();
@@ -187,12 +194,16 @@ public class Main {
         for (String seatNum : requestedSeats) {
             Seat seat = bus.getSeat(seatNum);
             String displaySeat = seat != null ? seat.getDisplayLabel() : seatNum;
-            System.out.printf("%n--- Passenger %d (Assigned Seat: %s) ---%n", count++, displaySeat);
+            double seatFare = bus.calculatePriceForSeatAllocation(count - 1);
+
+            System.out.printf("%n--- Passenger %d (Assigned Seat: %s | Fare: Rs. %.2f%s) ---%n",
+                    count++, displaySeat, seatFare,
+                    seatFare > bus.getBasePrice() ? " [20% SURGE APPLIED]" : "");
             String name = InputValidator.readNonEmptyString(scanner, "Full Name: ", "Passenger Name");
             int age = InputValidator.readIntInRange(scanner, "Age (1-120): ", 1, 120, "Age");
             String gender = InputValidator.readGender(scanner, "Gender (M/F/Other): ");
 
-            Passenger p = new Passenger(name, age, gender, seatNum, bus.getBasePrice());
+            Passenger p = new Passenger(name, age, gender, seatNum, seatFare);
             passengerList.add(p);
         }
 

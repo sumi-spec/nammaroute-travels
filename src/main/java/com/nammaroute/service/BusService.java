@@ -69,21 +69,24 @@ public class BusService {
         System.out.println("==========================================================================================================");
         System.out.println("                                      CURRENT BUS SERVICES SCHEDULE                                       ");
         System.out.println("==========================================================================================================");
-        System.out.printf("%-10s %-16s %-16s %-18s %-14s %-10s %-10s %-10s%n",
-                "Route ID", "Origin", "Destination", "Departure", "Type", "Fare (INR)", "Available", "Capacity");
+        System.out.printf("%-10s %-16s %-16s %-18s %-14s %-16s %-10s %-10s%n",
+                "Route ID", "Origin", "Destination", "Departure", "Type", "Current Fare", "Available", "Capacity");
         System.out.println("----------------------------------------------------------------------------------------------------------");
 
         if (buses.isEmpty()) {
             System.out.println(">> No bus services currently available.");
         } else {
             for (Bus bus : buses.values()) {
-                System.out.printf("%-10s %-16s %-16s %-18s %-14s Rs. %-7.2f %-10d %-10d%n",
+                String fareDisplay = bus.isSurgePricingActive()
+                        ? String.format("Rs. %.0f [⚡Surge]", bus.getCurrentSeatPrice())
+                        : String.format("Rs. %.0f", bus.getBasePrice());
+                System.out.printf("%-10s %-16s %-16s %-18s %-14s %-16s %-10d %-10d%n",
                         bus.getRouteId(),
                         bus.getOrigin(),
                         bus.getDestination(),
                         bus.getDepartureTime().format(Bus.DATE_TIME_FORMATTER),
                         bus.getBusType().getDisplayName(),
-                        bus.getBasePrice(),
+                        fareDisplay,
                         bus.getAvailableSeatsCount(),
                         bus.getTotalSeats());
             }
